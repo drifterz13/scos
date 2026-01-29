@@ -1,0 +1,24 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: ./apps/web/Dockerfile
+    ports:
+      - "3000:80"
+  order-svc:
+    build:
+      context: .
+      dockerfile: ./apps/order/Dockerfile
+    ports:
+      - "3001:3001"
+    environment:
+      - PORT=3001
+
+  warehouse-svc:
+    build:
+      context: .
+      dockerfile: ./apps/warehouse/Dockerfile
+    ports:
+      - "3002:3002"
+    environment:
+      - PORT=3002

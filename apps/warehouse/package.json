@@ -1,0 +1,18 @@
+{
+  "name": "warehouse",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "bun run --watch index.ts",
+    "build": "bun build index.ts --outdir ./dist",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@scos/tsconfig": "workspace:*",
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}

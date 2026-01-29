@@ -1,0 +1,22 @@
+{
+  "name": "scos",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "packageManager": "bun@1.3.2",
+  "scripts": {
+    "dev:order": "turbo run dev --filter=order",
+    "dev:warehouse": "turbo run dev --filter=warehouse",
+    "build": "turbo run build",
+    "typecheck": "turbo run typecheck"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "turbo": "^2.8.0",
+    "typescript": "^5.9.3"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ]
+}
