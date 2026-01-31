@@ -32,7 +32,7 @@ jobs:
       - name: Identify affected apps
         id: set-matrix
         run: |
-          echo "apps=$(bunx turbo@2.8.0 ls --affected --output=json | jq -c '.packages.items')" >> $GITHUB_OUTPUT
+          echo "apps=$(bunx turbo@2.8.0 ls --affected --output=json | jq -c '.packages.items | map(select(.name == "order" or .name == "warehouse"))')" >> $GITHUB_OUTPUT
 
   build:
     name: Build ${{ matrix.app.name }}
