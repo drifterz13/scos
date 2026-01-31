@@ -2,9 +2,9 @@ name: ci
 
 on:
   pull_request:
-    branches: [master]
-  push:
-    branches-ignore: [master]
+    branches:
+      - master
+    types: [opened, synchronize, reopened]
 
 jobs:
   ci:
