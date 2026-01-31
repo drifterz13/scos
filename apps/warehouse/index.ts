@@ -2,10 +2,10 @@ const PORT = process.env.PORT || 3002;
 
 const server = Bun.serve({
   port: PORT,
-  fetch(request) {
-    return new Response("Warehouse Service is running");
+  routes: {
+    "/": () => new Response("Warehouse Service is running"),
+    "/health": () => new Response("OK 4"),
   },
 });
 
 console.log(`Warehouse Services is running on ${server.url}`);
-

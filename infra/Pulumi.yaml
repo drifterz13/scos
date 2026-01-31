@@ -1,0 +1,8 @@
+name: scos-infra
+description: Infrastructure for SCOS application
+runtime:
+  name: nodejs
+  options:
+    packagemanager: bun
+config:
+  aws:region: ap-southeast-1

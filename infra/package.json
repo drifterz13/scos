@@ -1,0 +1,19 @@
+{
+    "name": "scos-infra",
+    "main": "index.ts",
+    "scripts": {
+        "typecheck": "tsc --noEmit",
+        "preview": "pulumi preview",
+        "up": "pulumi up",
+        "destroy": "pulumi destroy"
+    },
+    "devDependencies": {
+        "@types/node": "^18",
+        "typescript": "^5.0.0"
+    },
+    "dependencies": {
+        "@pulumi/aws": "^7.16.0",
+        "@pulumi/awsx": "^3.1.0",
+        "@pulumi/pulumi": "^3.113.0"
+    }
+}
