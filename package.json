@@ -8,10 +8,18 @@
     "dev:order": "turbo run dev --filter=order",
     "dev:warehouse": "turbo run dev --filter=warehouse",
     "build": "turbo run build",
-    "typecheck": "turbo run typecheck"
+    "typecheck": "turbo run typecheck",
+    "lint": "turbo run lint",
+    "format": "turbo run format",
+    "ci": "turbo run ci",
+    "test:unit": "turbo run test:unit"
   },
   "devDependencies": {
+    "@biomejs/biome": "2.3.13",
+    "@commitlint/cli": "^20.4.0",
+    "@commitlint/config-conventional": "^20.4.0",
     "@types/bun": "latest",
+    "lefthook": "^2.0.16",
     "turbo": "^2.8.0",
     "typescript": "^5.9.3"
   },

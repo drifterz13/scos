@@ -1,0 +1,17 @@
+{
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true
+    }
+  },
+  "formatter": {
+    "lineWidth": 120,
+    "indentStyle": "space",
+    "indentWidth": 2
+  },
+  "files": {
+    "includes": ["**/*.ts", "**/*.tsx", "**/*.json"],
+    "ignoreUnknown": true
+  }
+}
