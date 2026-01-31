@@ -1,6 +1,6 @@
-import * as pulumi from "@pulumi/pulumi";
 import * as aws from "@pulumi/aws";
 import * as awsx from "@pulumi/awsx";
+import * as pulumi from "@pulumi/pulumi";
 
 const config = new pulumi.Config();
 const appName = "scos";
@@ -85,40 +85,37 @@ const orderService = new awsx.ecs.FargateService(`${appName}-order-service`, {
   },
 });
 
-const warehouseService = new awsx.ecs.FargateService(
-  `${appName}-warehouse-service`,
-  {
-    cluster: cluster.arn,
-    desiredCount: 1,
-    networkConfiguration: {
-      subnets: vpc.publicSubnetIds,
-      securityGroups: [ecsSecurityGroup.id],
-      assignPublicIp: true,
-    },
-    taskDefinitionArgs: {
-      container: {
-        name: "warehouse",
-        image: warehouseImageUri,
-        cpu: 256,
-        memory: 512,
-        essential: true,
-        portMappings: [
-          {
-            containerPort: 3002,
-            hostPort: 3002,
-            protocol: "tcp",
-          },
-        ],
-        environment: [
-          {
-            name: "PORT",
-            value: "3002",
-          },
-        ],
-      },
+const warehouseService = new awsx.ecs.FargateService(`${appName}-warehouse-service`, {
+  cluster: cluster.arn,
+  desiredCount: 1,
+  networkConfiguration: {
+    subnets: vpc.publicSubnetIds,
+    securityGroups: [ecsSecurityGroup.id],
+    assignPublicIp: true,
+  },
+  taskDefinitionArgs: {
+    container: {
+      name: "warehouse",
+      image: warehouseImageUri,
+      cpu: 256,
+      memory: 512,
+      essential: true,
+      portMappings: [
+        {
+          containerPort: 3002,
+          hostPort: 3002,
+          protocol: "tcp",
+        },
+      ],
+      environment: [
+        {
+          name: "PORT",
+          value: "3002",
+        },
+      ],
     },
   },
-);
+});
 
 export const vpcId = vpc.vpcId;
 export const clusterName = cluster.name;

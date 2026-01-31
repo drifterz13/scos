@@ -6,7 +6,11 @@
   "scripts": {
     "dev": "bun --hot src/index.ts",
     "build": "bun build ./src/index.html --outdir=dist --sourcemap --target=browser --minify --define:process.env.NODE_ENV='\"production\"' --env='BUN_PUBLIC_*'",
-    "start": "NODE_ENV=production bun src/index.ts"
+    "start": "NODE_ENV=production bun src/index.ts",
+    "lint": "biome check --write src",
+    "format": "biome check --write src",
+    "ci": "biome ci src",
+    "test:unit": "echo \"No tests specified\" && exit 0"
   },
   "dependencies": {
     "react": "^19",
