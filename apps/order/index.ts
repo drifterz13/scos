@@ -4,7 +4,7 @@ const server = Bun.serve({
   port: PORT,
   routes: {
     "/": () => new Response("Order Service is running"),
-    "/health": () => new Response("OK 3"),
+    "/health": () => new Response("OK 1"),
   },
 });
 
