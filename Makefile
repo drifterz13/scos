@@ -5,10 +5,10 @@ docker-web:
 	docker build -t web -f apps/web/Dockerfile .
 
 docker-order:
-	docker build -t order-svc -f apps/order/Dockerfile .
+	docker build -t order-svc -f apps/order-api/Dockerfile .
 
 docker-warehouse:
-	docker build -t warehouse-svc -f apps/warehouse/Dockerfile .
+	docker build -t warehouse-svc -f apps/warehouse-api/Dockerfile .
 
 docker-run:
 	docker-compose -f docker-compose.dev.yml up -d

@@ -5,8 +5,8 @@
   "private": true,
   "packageManager": "bun@1.3.2",
   "scripts": {
-    "dev:order": "turbo run dev --filter=order",
-    "dev:warehouse": "turbo run dev --filter=warehouse",
+    "dev:order": "turbo run dev --filter=order-api",
+    "dev:warehouse": "turbo run dev --filter=warehouse-api",
     "build": "turbo run build",
     "typecheck": "turbo run typecheck",
     "lint": "turbo run lint",

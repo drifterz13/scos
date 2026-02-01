@@ -53,7 +53,7 @@ services:
   # order-svc:
   #   build:
   #     context: .
-  #     dockerfile: ./apps/order/Dockerfile
+  #     dockerfile: ./apps/order-api/Dockerfile
   #   ports:
   #     - "3001:3001"
   #   environment:
@@ -64,7 +64,7 @@ services:
   # warehouse-svc:
   #   build:
   #     context: .
-  #     dockerfile: ./apps/warehouse/Dockerfile
+  #     dockerfile: ./apps/warehouse-api/Dockerfile
   #   ports:
   #     - "3002:3002"
   #   environment:
