@@ -12,10 +12,7 @@ export function App() {
         <img src={reactLogo} alt="React Logo" className="logo react-logo" />
       </div>
 
-      <h1>SCOS</h1>
-      <p>
-        Edit <code>src/App.tsx</code> and save to test HMR
-      </p>
+      <h1>SCOS App</h1>
       <APITester />
     </div>
   );
