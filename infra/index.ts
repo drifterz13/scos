@@ -1,6 +1,7 @@
 import * as aws from "@pulumi/aws";
 import * as awsx from "@pulumi/awsx";
 import * as pulumi from "@pulumi/pulumi";
+import { BastionHost } from "./components/bastionHost";
 import { Database } from "./components/database";
 import { EcsService } from "./components/ecsService";
 import { Queue } from "./components/queue";
@@ -84,6 +85,22 @@ new aws.ec2.SecurityGroupRule(`${appName}-rds-from-ecs`, {
   protocol: "tcp",
   securityGroupId: rdsSecurityGroup.id,
   sourceSecurityGroupId: ecsSecurityGroup.id,
+});
+
+const bastionHost = new BastionHost(`${appName}-bastion`, {
+  appName,
+  vpcId: vpc.vpcId,
+  subnetId: vpc.publicSubnetIds[0],
+  rdsSecurityGroupId: rdsSecurityGroup.id,
+});
+
+new aws.ec2.SecurityGroupRule(`${appName}-rds-from-bastion`, {
+  type: "ingress",
+  fromPort: 5432,
+  toPort: 5432,
+  protocol: "tcp",
+  securityGroupId: rdsSecurityGroup.id,
+  sourceSecurityGroupId: bastionHost.securityGroupId,
 });
 
 const dbSubnetGroup = new aws.rds.SubnetGroup(`${appName}-db-subnet-group`, {
@@ -307,3 +324,7 @@ export const namespaceId = namespace.id;
 export const namespaceName = namespace.name;
 export const orderServiceDiscoveryArn = orderService.serviceDiscovery.arn;
 export const warehouseServiceDiscoveryArn = warehouseService.serviceDiscovery.arn;
+
+// Bastion Host exports
+export const bastionInstanceId = bastionHost.instanceId;
+export const bastionSecurityGroupId = bastionHost.securityGroupId;
