@@ -1,24 +1,78 @@
 services:
-  web:
-    build:
-      context: .
-      dockerfile: ./apps/web/Dockerfile
+  localstack:
+    container_name: localstack_sqs
+    image: localstack/localstack
     ports:
-      - "3000:80"
-  order-svc:
-    build:
-      context: .
-      dockerfile: ./apps/order/Dockerfile
-    ports:
-      - "3001:3001"
+      - "127.0.0.1:4566:4566"            # LocalStack Edge Port
+      - "127.0.0.1:4510-4559:4510-4559"  # External services range
     environment:
-      - PORT=3001
+      - DEBUG=1
+      - AWS_DEFAULT_REGION=ap-southeast-1
+      - SERVICES=sqs
+    volumes:
+      # Mount the init script into the container
+      - "./docker/localstack/init-sqs.sh:/etc/localstack/init/ready.d/init-sqs.sh"
+      # Persist data between restarts (optional)
+      - "localstack_data:/var/lib/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
 
-  warehouse-svc:
-    build:
-      context: .
-      dockerfile: ./apps/warehouse/Dockerfile
+  sqs-admin:
+    image: pacovk/sqs-admin
     ports:
-      - "3002:3002"
+      - "3999:3999"
     environment:
-      - PORT=3002
+      - SQS_ENDPOINT_URL=http://localstack:4566
+      - SQS_AWS_REGION=ap-southeast-1
+    depends_on:
+      - localstack
+
+  order-db:
+    image: postgres:17
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: orderdb
+      POSTGRES_USER: orderadmin
+      POSTGRES_PASSWORD: nosecret
+    volumes:
+      - order_pg_data:/var/lib/postgresql/data
+
+  warehouse-db:
+    image: postgres:17
+    restart: always
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_DB: warehousedb
+      POSTGRES_USER: warehouseadmin
+      POSTGRES_PASSWORD: nosecret
+    volumes:
+      - warehouse_pg_data:/var/lib/postgresql/data
+
+  # order-svc:
+  #   build:
+  #     context: .
+  #     dockerfile: ./apps/order/Dockerfile
+  #   ports:
+  #     - "3001:3001"
+  #   environment:
+  #     - PORT=3001
+  #   depends_on:
+  #     - order-db
+
+  # warehouse-svc:
+  #   build:
+  #     context: .
+  #     dockerfile: ./apps/warehouse/Dockerfile
+  #   ports:
+  #     - "3002:3002"
+  #   environment:
+  #     - PORT=3002
+  #   depends_on:
+  #     - warehouse-db
+
+volumes:
+  order_pg_data:
+  warehouse_pg_data:
+  localstack_data:
