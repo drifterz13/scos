@@ -5,6 +5,7 @@ import { BastionHost } from "./components/bastionHost";
 import { Database } from "./components/database";
 import { EcsService } from "./components/ecsService";
 import { Queue } from "./components/queue";
+import { StaticWebsite } from "./components/staticWebsite";
 
 const config = new pulumi.Config();
 const appName = "scos";
@@ -298,6 +299,12 @@ const warehouseService = new EcsService("warehouse", {
   ],
 });
 
+// Web app static website
+const webSite = new StaticWebsite("web", {
+  appName,
+  siteName: "web",
+});
+
 export const vpcId = vpc.vpcId;
 export const publicSubnetIds = vpc.publicSubnetIds;
 export const privateSubnetIds = vpc.privateSubnetIds;
@@ -328,3 +335,7 @@ export const warehouseServiceDiscoveryArn = warehouseService.serviceDiscovery.ar
 // Bastion Host exports
 export const bastionInstanceId = bastionHost.instanceId;
 export const bastionSecurityGroupId = bastionHost.securityGroupId;
+
+// Web app static website exports
+export const webBucketName = webSite.bucketName;
+export const webUrl = webSite.websiteUrl;
