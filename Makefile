@@ -1,4 +1,5 @@
-.PHONY: docker-order docker-warehouse docker-web docker-run
+.PHONY: docker-order docker-warehouse docker-web docker-run \
+        ssm-warehousedb ssm-orderdb
 
 docker-web:
 	docker build -t web -f apps/web/Dockerfile .
@@ -11,3 +12,15 @@ docker-warehouse:
 
 docker-run:
 	docker-compose -f docker-compose.dev.yml up -d
+
+ssm-warehousedb:
+	aws ssm start-session \
+		--target i-03508a7913ccb1b99 \
+		--document-name AWS-StartPortForwardingSessionToRemoteHost \
+		--parameters '{"host":["scos-warehouse-dbfbf19f3.cjemee80aitz.ap-southeast-1.rds.amazonaws.com"], "portNumber":["5432"], "localPortNumber":["5433"]}'
+
+ssm-orderdb:
+	aws ssm start-session \
+		--target i-03508a7913ccb1b99 \
+		--document-name AWS-StartPortForwardingSessionToRemoteHost \
+		--parameters '{"host":["scos-order-dbbdf3b32.cjemee80aitz.ap-southeast-1.rds.amazonaws.com"], "portNumber":["5432"], "localPortNumber":["5432"]}'
