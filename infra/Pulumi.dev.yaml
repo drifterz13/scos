@@ -1,0 +1,5 @@
+config:
+  scos-infra:orderDbPassword:
+    secure: AAABAH/lsTldFHMZG+BzrylAH132JNye+DE0NI4kNAoOeoaHIalv4w==
+  scos-infra:warehouseDbPassword:
+    secure: AAABAOZatqcxBdY568wUwxMUN12vgp3MowRS/Sa/7D7u0gk7sHvnBQ==
