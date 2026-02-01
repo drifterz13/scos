@@ -1,6 +1,7 @@
 import * as aws from "@pulumi/aws";
 import * as awsx from "@pulumi/awsx";
 import * as pulumi from "@pulumi/pulumi";
+import { ApiGateway } from "./components/apiGateway";
 import { BastionHost } from "./components/bastionHost";
 import { Database } from "./components/database";
 import { EcsService } from "./components/ecsService";
@@ -51,24 +52,29 @@ const rdsSecurityGroup = new aws.ec2.SecurityGroup(`${appName}-rds-sg`, {
   ],
 });
 
-const ecsSecurityGroup = new aws.ec2.SecurityGroup(`${appName}-ecs-sg`, {
+const vpcLinkSecurityGroup = new aws.ec2.SecurityGroup(`${appName}-vpc-link-sg`, {
   vpcId: vpc.vpcId,
-  ingress: [
+  egress: [
     {
       protocol: "tcp",
       fromPort: 3001,
       toPort: 3001,
       cidrBlocks: ["0.0.0.0/0"],
-      description: "Allow HTTP access to order service",
+      description: "Allow outbound to order service",
     },
     {
       protocol: "tcp",
       fromPort: 3002,
       toPort: 3002,
       cidrBlocks: ["0.0.0.0/0"],
-      description: "Allow HTTP access to warehouse service",
+      description: "Allow outbound to warehouse service",
     },
   ],
+});
+
+// ECS Security Group - allows traffic from VPC Link and inter-service communication
+const ecsSecurityGroup = new aws.ec2.SecurityGroup(`${appName}-ecs-sg`, {
+  vpcId: vpc.vpcId,
   egress: [
     {
       protocol: "-1",
@@ -77,6 +83,46 @@ const ecsSecurityGroup = new aws.ec2.SecurityGroup(`${appName}-ecs-sg`, {
       cidrBlocks: ["0.0.0.0/0"],
     },
   ],
+});
+
+new aws.ec2.SecurityGroupRule(`${appName}-ecs-from-vpc-link-3001`, {
+  type: "ingress",
+  fromPort: 3001,
+  toPort: 3001,
+  protocol: "tcp",
+  securityGroupId: ecsSecurityGroup.id,
+  sourceSecurityGroupId: vpcLinkSecurityGroup.id,
+  description: "Allow VPC Link access to order service",
+});
+
+new aws.ec2.SecurityGroupRule(`${appName}-ecs-from-vpc-link-3002`, {
+  type: "ingress",
+  fromPort: 3002,
+  toPort: 3002,
+  protocol: "tcp",
+  securityGroupId: ecsSecurityGroup.id,
+  sourceSecurityGroupId: vpcLinkSecurityGroup.id,
+  description: "Allow VPC Link access to warehouse service",
+});
+
+new aws.ec2.SecurityGroupRule(`${appName}-ecs-self-3001`, {
+  type: "ingress",
+  fromPort: 3001,
+  toPort: 3001,
+  protocol: "tcp",
+  securityGroupId: ecsSecurityGroup.id,
+  sourceSecurityGroupId: ecsSecurityGroup.id,
+  description: "Allow inter-service communication to order service",
+});
+
+new aws.ec2.SecurityGroupRule(`${appName}-ecs-self-3002`, {
+  type: "ingress",
+  fromPort: 3002,
+  toPort: 3002,
+  protocol: "tcp",
+  securityGroupId: ecsSecurityGroup.id,
+  sourceSecurityGroupId: ecsSecurityGroup.id,
+  description: "Allow inter-service communication to warehouse service",
 });
 
 new aws.ec2.SecurityGroupRule(`${appName}-rds-from-ecs`, {
@@ -111,7 +157,6 @@ const dbSubnetGroup = new aws.rds.SubnetGroup(`${appName}-db-subnet-group`, {
   },
 });
 
-// AWS Secrets Manager secrets for database passwords
 const orderDbSecret = new aws.secretsmanager.Secret(`${appName}-order-db-password`, {
   description: "Order database password",
 });
@@ -242,11 +287,12 @@ const orderService = new EcsService("order", {
   cpu: 256,
   memory: 512,
   desiredCount: 1,
-  subnetIds: vpc.publicSubnetIds,
+  subnetIds: vpc.privateSubnetIds,
   securityGroupIds: [ecsSecurityGroup.id],
   taskRoleArn: taskRole.arn,
   executionRoleArn: taskExecutionRole.arn,
   namespaceId: namespace.id,
+  assignPublicIp: false,
   environment: [
     { name: "PORT", value: "3001" },
     { name: "DB_HOST", value: orderDb.address },
@@ -276,11 +322,12 @@ const warehouseService = new EcsService("warehouse", {
   cpu: 256,
   memory: 512,
   desiredCount: 1,
-  subnetIds: vpc.publicSubnetIds,
+  subnetIds: vpc.privateSubnetIds,
   securityGroupIds: [ecsSecurityGroup.id],
   taskRoleArn: taskRole.arn,
   executionRoleArn: taskExecutionRole.arn,
   namespaceId: namespace.id,
+  assignPublicIp: false,
   environment: [
     { name: "PORT", value: "3002" },
     { name: "DB_HOST", value: warehouseDb.address },
@@ -297,6 +344,25 @@ const warehouseService = new EcsService("warehouse", {
       valueFrom: warehouseDbSecret.arn,
     },
   ],
+});
+
+// API Gateway with VPC Link for private service access
+const apiGateway = new ApiGateway(`${appName}-api-gateway`, {
+  appName,
+  vpcId: vpc.vpcId,
+  subnetIds: vpc.privateSubnetIds,
+  securityGroupIds: [vpcLinkSecurityGroup.id],
+  services: [
+    {
+      pathPrefix: "/api/orders",
+      serviceDiscoveryArn: orderService.serviceDiscovery.arn,
+    },
+    {
+      pathPrefix: "/api/warehouse",
+      serviceDiscoveryArn: warehouseService.serviceDiscovery.arn,
+    },
+  ],
+  corsAllowOrigins: ["*"],
 });
 
 // Web app static website
@@ -339,3 +405,7 @@ export const bastionSecurityGroupId = bastionHost.securityGroupId;
 // Web app static website exports
 export const webBucketName = webSite.bucketName;
 export const webUrl = webSite.websiteUrl;
+
+// API Gateway exports
+export const apiGatewayEndpoint = apiGateway.endpoint;
+export const apiGatewayInvokeUrl = apiGateway.invokeUrl;

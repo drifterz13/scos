@@ -18,6 +18,7 @@ export interface EcsServiceArgs {
   namespaceId: pulumi.Input<string>;
   environment: pulumi.Input<awsx.types.input.ecs.TaskDefinitionKeyValuePairArgs>[];
   secrets?: pulumi.Input<awsx.types.input.ecs.TaskDefinitionSecretArgs>[];
+  assignPublicIp?: boolean;
 }
 
 /**
@@ -44,6 +45,10 @@ export class EcsService extends pulumi.ComponentResource {
               ttl: 10,
               type: "A",
             },
+            {
+              ttl: 10,
+              type: "SRV",
+            },
           ],
           routingPolicy: "MULTIVALUE",
         },
@@ -68,10 +73,12 @@ export class EcsService extends pulumi.ComponentResource {
         networkConfiguration: {
           subnets: args.subnetIds,
           securityGroups: args.securityGroupIds,
-          assignPublicIp: true,
+          assignPublicIp: args.assignPublicIp ?? false,
         },
         serviceRegistries: {
           registryArn: this.serviceDiscovery.arn,
+          containerName: args.serviceName,
+          containerPort: args.containerPort,
         },
         taskDefinitionArgs: {
           taskRole: {
