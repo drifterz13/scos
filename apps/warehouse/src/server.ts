@@ -1,4 +1,5 @@
 import { appConfig } from "./config/app-config";
+import { sql } from "./infra/db";
 
 const headers = {
   "Access-Control-Allow-Origin": "*",
@@ -9,12 +10,10 @@ const headers = {
 const server = Bun.serve({
   port: appConfig.port,
   routes: {
-    "/": () => new Response("Order Service is running", { status: 200, headers }),
-    "/summary": async () => {
-      const result = await fetch(`${appConfig.warehouseServiceUrl}`);
-      const data = await result.json();
+    "/": async () => {
+      const [warehouses] = await sql`SELECT * FROM warehouses`;
 
-      return Response.json(data);
+      return Response.json({ data: warehouses });
     },
     "/health": () => new Response("OK", { status: 200, headers }),
   },
@@ -26,4 +25,4 @@ const server = Bun.serve({
   },
 });
 
-console.log(`Order Services is running on ${server.url}`);
+console.log(`Warehouse Services is running on ${server.url}`);
