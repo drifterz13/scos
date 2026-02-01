@@ -4,12 +4,12 @@ on:
   push:
     branches: [ master ]
     paths:
-      - 'apps/order/**'
-      - 'apps/warehouse/**'
+      - 'apps/order-api/**'
+      - 'apps/warehouse-api/**'
 
 env:
   AWS_REGION: ap-southeast-1
-  REPO_MAP: '{"order": "scos-order-repo-f437cb3", "warehouse": "scos-warehouse-repo-42d0f08"}'
+  REPO_MAP: '{"order-api": "scos-order-repo-f437cb3", "warehouse-api": "scos-warehouse-repo-42d0f08"}'
 
 jobs:
   detect-changes:
@@ -32,7 +32,7 @@ jobs:
       - name: Identify affected apps
         id: set-matrix
         run: |
-          echo "apps=$(bunx turbo@2.8.0 ls --affected --output=json | jq -c '.packages.items | map(select(.name == "order" or .name == "warehouse"))')" >> $GITHUB_OUTPUT
+          echo "apps=$(bunx turbo@2.8.0 ls --affected --output=json | jq -c '.packages.items | map(select(.name == "order-api" or .name == "warehouse-api"))')" >> $GITHUB_OUTPUT
 
   build:
     name: Build ${{ matrix.app.name }}
