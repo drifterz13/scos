@@ -23,4 +23,4 @@ COPY --from=installer /app/apps/warehouse-api/package.json .
 COPY --from=installer /app/node_modules ./node_modules
 
 EXPOSE 3002
-ENTRYPOINT [ "bun", "run", "dist/src/server.js" ]
+ENTRYPOINT [ "bun", "run", "dist/server.js" ]
