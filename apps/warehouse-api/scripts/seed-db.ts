@@ -1,7 +1,8 @@
 import { SQL } from "bun";
 
-const { DB_USER, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME } = Bun.env;
-const dbUrl = `postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}`;
+const { DB_USER, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME, NODE_ENV } = Bun.env;
+const sslMode = NODE_ENV === "production" ? "require" : "disable";
+const dbUrl = `postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}?sslMode=${sslMode}`;
 
 const sql = new SQL(dbUrl);
 
