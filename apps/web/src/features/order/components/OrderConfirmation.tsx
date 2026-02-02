@@ -15,7 +15,6 @@ export function OrderConfirmation({ data, onNewOrder }: OrderConfirmationProps) 
 
   return (
     <div className="bg-white rounded-lg shadow-md border-2 border-green-500 p-10 text-center">
-      {/* Success Icon */}
       <div className="flex justify-center mb-6">
         <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center">
           <CheckCircle className="w-12 h-12 text-green-600" />
@@ -27,7 +26,6 @@ export function OrderConfirmation({ data, onNewOrder }: OrderConfirmationProps) 
       <p className="text-tertiary font-lato mb-2">Order Number</p>
       <div className="text-5xl font-sora font-bold text-secondary mb-8">#{data.orderNumber}</div>
 
-      {/* Order Details Card */}
       <div className="bg-tertiary-light rounded-lg p-6 mb-8 text-left">
         <h3 className="text-lg font-sora font-semibold text-secondary mb-4">Order Summary</h3>
 
