@@ -19,6 +19,7 @@
       "dependencies": {
         "@aws-sdk/client-sqs": "^3.980.0",
         "env-var": "^7.5.0",
+        "zod": "^4.3.6",
       },
       "devDependencies": {
         "@scos/tsconfig": "workspace:*",
@@ -33,6 +34,7 @@
       "dependencies": {
         "@aws-sdk/client-sqs": "^3.980.0",
         "env-var": "^7.5.0",
+        "zod": "^4.3.6",
       },
       "devDependencies": {
         "@scos/tsconfig": "workspace:*",
