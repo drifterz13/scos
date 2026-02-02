@@ -119,6 +119,16 @@ new aws.ec2.SecurityGroupRule(`${appName}-ecs-self-3002`, {
   description: "Allow inter-service communication to warehouse service",
 });
 
+new aws.ec2.SecurityGroupRule(`${appName}-ecs-to-sqs-endpoint`, {
+  type: "ingress",
+  fromPort: 443,
+  toPort: 443,
+  protocol: "tcp",
+  securityGroupId: ecsSecurityGroup.id,
+  sourceSecurityGroupId: ecsSecurityGroup.id,
+  description: "Allow ECS containers to reach SQS VPC endpoint",
+});
+
 new aws.ec2.SecurityGroupRule(`${appName}-rds-from-ecs`, {
   type: "ingress",
   fromPort: 5432,
@@ -191,6 +201,20 @@ const orderToWarehouseQueue = new Queue(`${appName}-order-to-warehouse-queue`, {
 const warehouseToOrderQueue = new Queue(`${appName}-warehouse-to-order-queue`, {
   tags: {
     Name: `${appName}-warehouse-to-order-queue`,
+  },
+});
+
+// Allows ECS tasks in private subnets to reach SQS without NAT Gateway
+const region = aws.getRegionOutput();
+new aws.ec2.VpcEndpoint(`${appName}-sqs-endpoint`, {
+  vpcId: vpc.vpcId,
+  serviceName: pulumi.interpolate`com.amazonaws.${region}.sqs`,
+  vpcEndpointType: "Interface",
+  privateDnsEnabled: true,
+  subnetIds: vpc.privateSubnetIds,
+  securityGroupIds: [ecsSecurityGroup.id],
+  tags: {
+    Name: `${appName}-sqs-endpoint`,
   },
 });
 

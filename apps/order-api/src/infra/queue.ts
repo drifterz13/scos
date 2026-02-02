@@ -1,4 +1,4 @@
-import { type MessageAttributeValue, SendMessageCommand, SQSClient } from "@aws-sdk/client-sqs";
+import { type MessageAttributeValue, SendMessageCommand, SQSClient, type SQSClientConfig } from "@aws-sdk/client-sqs";
 import { appConfig } from "../config/app-config";
 
 export class QueueService {
@@ -6,10 +6,17 @@ export class QueueService {
   private queueUrl: string = appConfig.orderToWarehouseQueueUrl;
 
   constructor() {
-    this.sqsClient = new SQSClient({
+    const config: SQSClientConfig = {
       region: appConfig.awsRegion,
-      endpoint: appConfig.awsSQSEndpoint,
-    });
+    };
+    // Only set custom endpoint if explicitly configured (for LocalStack dev)
+    // When using VPC Interface Endpoints with privateDnsEnabled: true,
+    // the AWS SDK automatically routes traffic through the VPC endpoint.
+    // Setting a custom endpoint overrides this automatic routing.
+    if (appConfig.awsSQSEndpoint) {
+      config.endpoint = appConfig.awsSQSEndpoint;
+    }
+    this.sqsClient = new SQSClient(config);
   }
 
   async sendMessage(msgBody: string, messageAttributes?: Record<string, { stringValue: string; dataType: string }>) {
