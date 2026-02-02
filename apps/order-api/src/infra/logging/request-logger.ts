@@ -1,4 +1,4 @@
-import { getCategoryLogger } from "./logger";
+import { getCategoryLogger } from "@scos/shared";
 
 const logger = getCategoryLogger(["order-api", "http"]);
 

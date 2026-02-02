@@ -1,10 +1,9 @@
 import { configure, getConsoleSink, getLogger } from "@logtape/logtape";
 import { prettyFormatter } from "@logtape/pretty";
-import { appConfig } from "../../config/app-config";
 
 let isConfigured = false;
 
-export async function configureLogger(): Promise<void> {
+export async function configureLogger(logLevel: "debug" | "info" | "warning" | "error" | "fatal"): Promise<void> {
   if (isConfigured) return;
 
   await configure({
@@ -20,7 +19,7 @@ export async function configureLogger(): Promise<void> {
       },
       {
         category: [],
-        lowestLevel: appConfig.logLevel,
+        lowestLevel: logLevel,
         sinks: ["console"],
       },
     ],

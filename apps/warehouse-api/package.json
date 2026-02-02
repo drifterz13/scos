@@ -17,6 +17,7 @@
   },
   "devDependencies": {
     "@scos/tsconfig": "workspace:*",
+    "@scos/shared": "workspace:*",
     "@types/bun": "latest"
   },
   "peerDependencies": {

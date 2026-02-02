@@ -24,6 +24,7 @@
         "zod": "catalog:",
       },
       "devDependencies": {
+        "@scos/shared": "workspace:*",
         "@scos/tsconfig": "workspace:*",
         "@types/bun": "latest",
       },
@@ -41,6 +42,7 @@
         "zod": "catalog:",
       },
       "devDependencies": {
+        "@scos/shared": "workspace:*",
         "@scos/tsconfig": "workspace:*",
         "@types/bun": "latest",
       },
@@ -70,6 +72,18 @@
         "@vitejs/plugin-react": "^5.1.2",
         "tailwindcss": "^4.1.18",
         "vite": "^7.3.1",
+      },
+    },
+    "packages/shared": {
+      "name": "@scos/shared",
+      "version": "1.0.0",
+      "dependencies": {
+        "@logtape/logtape": "catalog:",
+        "@logtape/pretty": "catalog:",
+      },
+      "devDependencies": {
+        "@scos/tsconfig": "workspace:*",
+        "typescript": "^5",
       },
     },
     "packages/tsconfig": {
@@ -353,6 +367,8 @@
     "@rollup/rollup-win32-x64-gnu": ["@rollup/rollup-win32-x64-gnu@4.57.1", "", { "os": "win32", "cpu": "x64" }, "sha512-VMBH2eOOaKGtIJYleXsi2B8CPVADrh+TyNxJ4mWPnKfLB/DBUmzW+5m1xUrcwWoMfSLagIRpjUFeW5CO5hyciQ=="],
 
     "@rollup/rollup-win32-x64-msvc": ["@rollup/rollup-win32-x64-msvc@4.57.1", "", { "os": "win32", "cpu": "x64" }, "sha512-mxRFDdHIWRxg3UfIIAwCm6NzvxG0jDX/wBN6KsQFTvKFqqg9vTrWUE68qEjHt19A5wwx5X5aUi2zuZT7YR0jrA=="],
+
+    "@scos/shared": ["@scos/shared@workspace:packages/shared"],
 
     "@scos/tsconfig": ["@scos/tsconfig@workspace:packages/tsconfig"],
 

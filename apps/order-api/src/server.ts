@@ -1,33 +1,43 @@
+import { configureLogger, DEFAULT_CORS_HEADERS, getCategoryLogger } from "@scos/shared";
 import { ordersController } from "./composition-root";
 import { appConfig } from "./config/app-config";
-import { configureLogger, getCategoryLogger } from "./infra/logging/logger";
 import { withLogging } from "./presentation/middleware/logging-middleware";
 import { createOrderRoutes } from "./presentation/routes/orders.routes";
 
-await configureLogger();
-const logger = getCategoryLogger(["order-api", "server"]);
+async function createServer(options: {
+  port: number;
+  routes: Record<string, (req: Request) => Response | Promise<Response>>;
+}) {
+  await configureLogger(appConfig.logLevel);
+  const logger = getCategoryLogger(["server"]);
 
-const headers = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type, Authorization",
-};
+  const allRoutes = {
+    "/health": () => new Response("OK", { status: 200, headers: DEFAULT_CORS_HEADERS }),
+    ...options.routes,
+  };
 
-const orderRoutes = createOrderRoutes(ordersController);
+  const server = Bun.serve({
+    port: options.port,
+    routes: allRoutes,
+    async fetch(req) {
+      if (req.method === "OPTIONS") {
+        return new Response(null, {
+          status: 204,
+          headers: DEFAULT_CORS_HEADERS,
+        });
+      }
 
-const server = Bun.serve({
+      return new Response("Not Found", {
+        status: 404,
+        headers: DEFAULT_CORS_HEADERS,
+      });
+    },
+  });
+
+  logger.info`Server is running on ${server.url}`;
+}
+
+await createServer({
   port: appConfig.port,
-  routes: {
-    "/": () => new Response("Order Service is running", { status: 200, headers }),
-    "/health": () => new Response("OK", { status: 200, headers }),
-    ...withLogging(orderRoutes),
-  },
-  async fetch(req) {
-    if (req.method === "OPTIONS") {
-      return new Response(null, { status: 204, headers });
-    }
-    return new Response("Not Found", { status: 404, headers });
-  },
+  routes: withLogging(createOrderRoutes(ordersController)),
 });
-
-logger.info`Order Service is running on ${server.url}`;
