@@ -1,5 +1,6 @@
+import { warehousesController } from "./composition-root";
 import { appConfig } from "./config/app-config";
-import { sql } from "./infra/db";
+import { createWarehouseRoutes } from "./presentation/routes/warehouses.routes";
 
 const headers = {
   "Access-Control-Allow-Origin": "*",
@@ -7,15 +8,14 @@ const headers = {
   "Access-Control-Allow-Headers": "Content-Type, Authorization",
 };
 
+const warehouseRoutes = createWarehouseRoutes(warehousesController);
+
 const server = Bun.serve({
   port: appConfig.port,
   routes: {
-    "/": async () => {
-      const [warehouses] = await sql`SELECT * FROM warehouses`;
-
-      return Response.json({ data: warehouses });
-    },
+    "/": () => new Response("Warehouse Service is running", { status: 200, headers }),
     "/health": () => new Response("OK", { status: 200, headers }),
+    ...warehouseRoutes,
   },
   async fetch(req) {
     if (req.method === "OPTIONS") {
