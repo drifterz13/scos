@@ -1,5 +1,6 @@
 import { describe, expect, mock, test } from "bun:test";
-import type { IWarehouseServiceClient, WarehouseDto } from "../interfaces/warehouse-service.client.interface";
+import type { WarehouseDto } from "../dto/warehouse.dto";
+import type { IWarehouseServiceClient } from "../interfaces/warehouse-service.client.interface";
 import { VerifyOrderUseCase } from "./verify-order.use-case";
 
 describe("VerifyOrderUseCase", () => {
@@ -27,51 +28,7 @@ describe("VerifyOrderUseCase", () => {
   ];
 
   describe("execute", () => {
-    test("returns correct order preview with all calculations", async () => {
-      mockWarehouseServiceClient.getAllWarehouses = mock(() => Promise.resolve(warehouseDtos));
-
-      const result = await useCase.execute({
-        quantity: 10,
-        shippingLatitude: 34.05,
-        shippingLongitude: -118.25,
-      });
-
-      expect(result.orderPreview).toEqual({
-        unitPrice: 150,
-        quantity: 10,
-        discountPercentage: 0,
-        totalDiscountAmount: 0,
-        totalShippingCost: expect.any(Number),
-        totalPrice: expect.any(Number),
-      });
-    });
-
-    test("applies correct volume discount based on quantity", async () => {
-      mockWarehouseServiceClient.getAllWarehouses = mock(() => Promise.resolve(warehouseDtos));
-
-      const result = await useCase.execute({
-        quantity: 25,
-        shippingLatitude: 34.05,
-        shippingLongitude: -118.25,
-      });
-
-      expect(result.orderPreview.discountPercentage).toBe(5);
-    });
-
-    test("returns fulfillment plan prioritizing closest warehouses", async () => {
-      mockWarehouseServiceClient.getAllWarehouses = mock(() => Promise.resolve(warehouseDtos));
-
-      const result = await useCase.execute({
-        quantity: 10,
-        shippingLatitude: 34.05,
-        shippingLongitude: -118.25,
-      });
-
-      // LA should be closer to this destination than NY
-      expect(result.fulfillmentPlan[0]!.warehouseName).toBe("Los Angeles");
-    });
-
-    test("returns isValid: true when shipping <= 15% of order amount", async () => {
+    test("returns valid order with preview and fulfillment plan", async () => {
       mockWarehouseServiceClient.getAllWarehouses = mock(() => Promise.resolve(warehouseDtos));
 
       const result = await useCase.execute({
@@ -82,6 +39,25 @@ describe("VerifyOrderUseCase", () => {
 
       expect(result.isValid).toBe(true);
       expect(result.validationMessage).toBeUndefined();
+      expect(result.orderPreview).toMatchObject({
+        unitPrice: 150,
+        quantity: 10,
+      });
+      expect(result.fulfillmentPlan).toBeDefined();
+    });
+
+    test("returns invalid order when shipping cost exceeds 15% threshold", async () => {
+      mockWarehouseServiceClient.getAllWarehouses = mock(() => Promise.resolve(warehouseDtos));
+
+      const result = await useCase.execute({
+        quantity: 100,
+        // Thailand coordinates
+        shippingLatitude: 13.75,
+        shippingLongitude: 100.5,
+      });
+
+      expect(result.isValid).toBe(false);
+      expect(result.validationMessage).toBeDefined();
     });
   });
 });

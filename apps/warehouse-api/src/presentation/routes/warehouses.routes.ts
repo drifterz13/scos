@@ -1,9 +1,8 @@
+import { z } from "zod";
 import { InventoryUpdateDtoSchema } from "../../application/dto/warehouse.dto";
 import type { WarehousesController } from "../controllers/warehouses.controller";
 
 const InventoryUpdateArraySchema = z.array(InventoryUpdateDtoSchema);
-
-import { z } from "zod";
 
 const headers = {
   "Access-Control-Allow-Origin": "*",

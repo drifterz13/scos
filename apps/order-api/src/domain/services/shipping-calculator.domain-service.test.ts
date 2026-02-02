@@ -31,20 +31,14 @@ describe("ShippingCalculatorDomainService", () => {
       Coordinates.fromObject({ latitude: 40.639722, longitude: -73.778889 }),
       578,
     );
-    const paris = new Warehouse(
-      "paris",
-      "Paris",
-      Coordinates.fromObject({ latitude: 49.009722, longitude: 2.547778 }),
-      694,
-    );
 
     test("fulfills from single warehouse when sufficient stock", () => {
       const destination = Coordinates.fromObject({ latitude: 34.05, longitude: -118.25 });
       const plans = ShippingCalculatorDomainService.calculateOptimalFulfillment([losAngeles], destination, 100);
 
       expect(plans).toHaveLength(1);
-      expect(plans[0]!.warehouseId).toBe("la");
-      expect(plans[0]!.quantity).toBe(100);
+      expect(plans[0]?.warehouseId).toBe("la");
+      expect(plans[0]?.quantity).toBe(100);
     });
 
     test("prioritizes closest warehouse for multi-source fulfillment", () => {
@@ -60,11 +54,11 @@ describe("ShippingCalculatorDomainService", () => {
 
       expect(plans).toHaveLength(2);
       // LA (closest) should fulfill first
-      expect(plans[0]!.warehouseId).toBe("la");
-      expect(plans[0]!.quantity).toBe(355);
+      expect(plans[0]?.warehouseId).toBe("la");
+      expect(plans[0]?.quantity).toBe(355);
       // NY fulfills the rest
-      expect(plans[1]!.warehouseId).toBe("ny");
-      expect(plans[1]!.quantity).toBe(45);
+      expect(plans[1]?.warehouseId).toBe("ny");
+      expect(plans[1]?.quantity).toBe(45);
     });
 
     test("throws error when insufficient stock across all warehouses", () => {

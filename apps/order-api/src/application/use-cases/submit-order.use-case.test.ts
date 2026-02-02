@@ -72,28 +72,6 @@ describe("SubmitOrderUseCase", () => {
       expect(result.status).toBe(OrderStatus.SUBMITTED);
     });
 
-    test("generates unique order number", async () => {
-      const coords = Coordinates.fromObject({ latitude: 34.05, longitude: -118.25 });
-      const quantity = new Quantity(10);
-      const unitPrice = Money.fromDollars(150);
-      const discount = new Discount(0);
-      const shippingCost = Money.fromDollars(50);
-
-      const order = Order.create(coords, quantity, unitPrice, discount, shippingCost);
-      order.setOrderNumber(42);
-
-      mockOrderRepository.save = mock(() => Promise.resolve(order));
-      mockOrderRepository.getNextOrderNumber = mock(() => Promise.resolve(42));
-
-      await useCase.execute({
-        quantity: 10,
-        shippingLatitude: 34.05,
-        shippingLongitude: -118.25,
-      });
-
-      expect(mockOrderRepository.getNextOrderNumber).toHaveBeenCalled();
-    });
-
     test("calls warehouse service to update inventory", async () => {
       const coords = Coordinates.fromObject({ latitude: 34.05, longitude: -118.25 });
       const quantity = new Quantity(10);

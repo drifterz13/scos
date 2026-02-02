@@ -1,21 +1,6 @@
-import { z } from "zod";
-import type {
-  IWarehouseServiceClient,
-  WarehouseDto,
-} from "../../application/interfaces/warehouse-service.client.interface";
+import { type WarehouseDto, WarehousesResponseDtoSchema } from "../../application/dto/warehouse.dto";
+import type { IWarehouseServiceClient } from "../../application/interfaces/warehouse-service.client.interface";
 import { appConfig } from "../../config/app-config";
-
-const WarehousesResponseDtoSchema = z.object({
-  data: z.array(
-    z.object({
-      id: z.string().uuid(),
-      name: z.string(),
-      latitude: z.number().min(-90).max(90),
-      longitude: z.number().min(-180).max(180),
-      stockQuantity: z.number().nonnegative().int(),
-    }),
-  ),
-});
 
 export class WarehouseServiceClient implements IWarehouseServiceClient {
   private readonly baseUrl: string;
@@ -25,7 +10,7 @@ export class WarehouseServiceClient implements IWarehouseServiceClient {
   }
 
   async getAllWarehouses(): Promise<WarehouseDto[]> {
-    const response = await fetch(this.baseUrl, {
+    const response = await fetch(`${this.baseUrl}/warehouses`, {
       headers: { "Content-Type": "application/json" },
     });
 

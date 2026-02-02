@@ -1,10 +1,4 @@
-export interface WarehouseDto {
-  id: string;
-  name: string;
-  latitude: number;
-  longitude: number;
-  stockQuantity: number;
-}
+import type { WarehouseDto } from "../dto/warehouse.dto";
 
 export interface IWarehouseServiceClient {
   getAllWarehouses(): Promise<WarehouseDto[]>;

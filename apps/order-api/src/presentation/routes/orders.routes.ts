@@ -7,9 +7,16 @@ const headers = {
   "Access-Control-Allow-Headers": "Content-Type, Authorization",
 };
 
+function handleErrorResponse(error: unknown): Response {
+  if (error instanceof Error && error.name === "ZodError") {
+    return new Response(error.message, { status: 400, headers });
+  }
+  return new Response(error instanceof Error ? error.message : "Unknown error", { status: 500, headers });
+}
+
 export function createOrderRoutes(controller: OrdersController) {
   return {
-    "/api/orders/verify": async (req: Request) => {
+    "/orders/verify": async (req: Request) => {
       if (req.method !== "POST") {
         return new Response("Method Not Allowed", { status: 405, headers });
       }
@@ -19,14 +26,11 @@ export function createOrderRoutes(controller: OrdersController) {
         const result = await controller.verifyOrder(body);
         return Response.json(result, { headers });
       } catch (error: unknown) {
-        if (error instanceof Error && error.name === "ZodError") {
-          return new Response(error.message, { status: 400, headers });
-        }
-        return new Response(error instanceof Error ? error.message : "Unknown error", { status: 500, headers });
+        return handleErrorResponse(error);
       }
     },
 
-    "/api/orders/submit": async (req: Request) => {
+    "/orders/submit": async (req: Request) => {
       if (req.method !== "POST") {
         return new Response("Method Not Allowed", { status: 405, headers });
       }
@@ -36,10 +40,7 @@ export function createOrderRoutes(controller: OrdersController) {
         const result = await controller.submitOrder(body);
         return Response.json(result, { status: 201, headers });
       } catch (error: unknown) {
-        if (error instanceof Error && error.name === "ZodError") {
-          return new Response(error.message, { status: 400, headers });
-        }
-        return new Response(error instanceof Error ? error.message : "Unknown error", { status: 500, headers });
+        return handleErrorResponse(error);
       }
     },
   };
