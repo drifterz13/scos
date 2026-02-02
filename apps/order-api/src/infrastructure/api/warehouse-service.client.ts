@@ -8,7 +8,7 @@ import { appConfig } from "../../config/app-config";
 const WarehousesResponseDtoSchema = z.object({
   data: z.array(
     z.object({
-      id: z.string().uuid(),
+      id: z.uuid(),
       name: z.string(),
       latitude: z.number().min(-90).max(90),
       longitude: z.number().min(-180).max(180),
@@ -25,7 +25,7 @@ export class WarehouseServiceClient implements IWarehouseServiceClient {
   }
 
   async getAllWarehouses(): Promise<WarehouseDto[]> {
-    const response = await fetch(this.baseUrl, {
+    const response = await fetch(`${this.baseUrl}/warehouses`, {
       headers: { "Content-Type": "application/json" },
     });
 
@@ -34,6 +34,7 @@ export class WarehouseServiceClient implements IWarehouseServiceClient {
     }
 
     const json = await response.json();
+    console.log("JSON data: ", json);
     const data = WarehousesResponseDtoSchema.parse(json);
     return data.data;
   }

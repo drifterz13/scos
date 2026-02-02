@@ -3,7 +3,6 @@ import { Warehouse } from "../../domain/entities/warehouse.entity";
 import { DiscountCalculatorDomainService } from "../../domain/services/discount-calculator.domain-service";
 import { ShippingCalculatorDomainService } from "../../domain/services/shipping-calculator.domain-service";
 import { Coordinates } from "../../domain/value-objects/coordinates.vo";
-import { Money } from "../../domain/value-objects/money.vo";
 import { Quantity } from "../../domain/value-objects/quantity.vo";
 import type { VerifyOrderRequestDto, VerifyOrderResponseDto } from "../dto/verify-order.dto";
 import type { IWarehouseServiceClient, WarehouseDto } from "../interfaces/warehouse-service.client.interface";
@@ -65,7 +64,10 @@ export class VerifyOrderUseCase {
     return new Warehouse(
       dto.id,
       dto.name,
-      Coordinates.fromObject({ latitude: dto.latitude, longitude: dto.longitude }),
+      Coordinates.fromObject({
+        latitude: dto.latitude,
+        longitude: dto.longitude,
+      }),
       dto.stockQuantity,
     );
   }
