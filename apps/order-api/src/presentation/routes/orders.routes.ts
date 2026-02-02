@@ -21,7 +21,7 @@ function handleErrorResponse(error: unknown): Response {
 
 export function createOrderRoutes(controller: OrdersController) {
   return {
-    "/orders/verify": async (req: Request) => {
+    "/verify": async (req: Request) => {
       if (req.method === "OPTIONS") {
         return new Response(null, { status: 204, headers });
       }
@@ -31,7 +31,7 @@ export function createOrderRoutes(controller: OrdersController) {
 
       try {
         const body = VerifyOrderSchema.parse(await req.json());
-        logger.debug`POST /orders/verify - body: ${JSON.stringify(body)}`;
+        logger.debug`POST /verify - body: ${JSON.stringify(body)}`;
         const result = await controller.verifyOrder(body);
         return Response.json(result, { headers });
       } catch (error: unknown) {
@@ -39,7 +39,7 @@ export function createOrderRoutes(controller: OrdersController) {
       }
     },
 
-    "/orders/submit": async (req: Request) => {
+    "/submit": async (req: Request) => {
       if (req.method === "OPTIONS") {
         return new Response(null, { status: 204, headers });
       }
@@ -49,7 +49,7 @@ export function createOrderRoutes(controller: OrdersController) {
 
       try {
         const body = VerifyOrderSchema.parse(await req.json());
-        logger.debug`POST /orders/submit - body: ${JSON.stringify(body)}`;
+        logger.debug`POST /submit - body: ${JSON.stringify(body)}`;
         const result = await controller.submitOrder(body);
         return Response.json(result, { status: 201, headers });
       } catch (error: unknown) {

@@ -15,7 +15,7 @@ const headers = {
 
 export function createWarehouseRoutes(controller: WarehousesController) {
   return {
-    "/warehouses": async (req: Request) => {
+    "/list": async (req: Request) => {
       if (req.method !== "GET") {
         return new Response("Method Not Allowed", { status: 405, headers });
       }
@@ -23,13 +23,13 @@ export function createWarehouseRoutes(controller: WarehousesController) {
       return Response.json(result, { headers });
     },
 
-    "/inventory/update": async (req: Request) => {
+    "/inventory": async (req: Request) => {
       if (req.method !== "POST") {
         return new Response("Method Not Allowed", { status: 405, headers });
       }
       try {
         const body = InventoryUpdateArraySchema.parse(await req.json());
-        logger.debug`POST /inventory/update - body: ${JSON.stringify(body)}`;
+        logger.debug`POST /inventory - body: ${JSON.stringify(body)}`;
         await controller.updateInventory(body);
         return new Response("Inventory updated", { status: 200, headers });
       } catch (error: unknown) {

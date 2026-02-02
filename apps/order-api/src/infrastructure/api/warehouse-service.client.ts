@@ -10,7 +10,7 @@ export class WarehouseServiceClient implements IWarehouseServiceClient {
   }
 
   async getAllWarehouses(): Promise<WarehouseDto[]> {
-    const response = await fetch(`${this.baseUrl}/warehouses`, {
+    const response = await fetch(`${this.baseUrl}/list`, {
       headers: { "Content-Type": "application/json" },
     });
 
@@ -21,17 +21,5 @@ export class WarehouseServiceClient implements IWarehouseServiceClient {
     const json = await response.json();
     const data = WarehousesResponseDtoSchema.parse(json);
     return data.data;
-  }
-
-  async updateInventory(updates: Array<{ warehouseId: string; quantity: number }>): Promise<void> {
-    const response = await fetch(`${this.baseUrl}/inventory/update`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(updates),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to update inventory: ${response.statusText}`);
-    }
   }
 }
