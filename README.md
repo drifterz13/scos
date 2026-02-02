@@ -159,4 +159,5 @@ Because the **Domain** is separate from the database, we can write very fast tes
 
 * [ ] **Documentation:** Set up **Swagger** for API docs.
 * [ ] **Logging:** Move logs to **CloudWatch** for better monitoring.
+* [ ] **Error Handling:** Define clear error codes and messages for the APIs.
 

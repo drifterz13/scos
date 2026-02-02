@@ -43,11 +43,11 @@ export function WarehouseGrid({ warehouses }: WarehouseGridProps) {
             <div className="pt-4 border-t border-gray-100 grid grid-cols-2 gap-4 text-sm">
               <div>
                 <div className="text-gray-400">Latitude</div>
-                <div className="text-gray-900 font-medium">{warehouse.latitude.toFixed(4)}°</div>
+                <div className="text-gray-900 font-medium">{warehouse.latitude}°</div>
               </div>
               <div>
                 <div className="text-gray-400">Longitude</div>
-                <div className="text-gray-900 font-medium">{warehouse.longitude.toFixed(4)}°</div>
+                <div className="text-gray-900 font-medium">{warehouse.longitude}°</div>
               </div>
             </div>
           </div>

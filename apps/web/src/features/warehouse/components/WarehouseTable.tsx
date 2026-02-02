@@ -36,8 +36,8 @@ export function WarehouseTable({ warehouses }: WarehouseTableProps) {
                 <td className="py-4 px-6">
                   <div className="font-semibold text-gray-900">{warehouse.name}</div>
                   <div className="text-sm text-gray-500 mt-1">
-                    {warehouse.latitude.toFixed(2)}°{warehouse.latitude >= 0 ? "N" : "S"},{" "}
-                    {Math.abs(warehouse.longitude).toFixed(2)}°{warehouse.longitude >= 0 ? "E" : "W"}
+                    {warehouse.latitude}°{warehouse.latitude >= 0 ? "N" : "S"}, {Math.abs(warehouse.longitude)}°
+                    {warehouse.longitude >= 0 ? "E" : "W"}
                   </div>
                 </td>
 
@@ -45,7 +45,7 @@ export function WarehouseTable({ warehouses }: WarehouseTableProps) {
                   <div className="flex items-center gap-2 text-gray-600 text-sm">
                     <MapPin className="h-4 w-4 text-gray-400" />
                     <span>
-                      {warehouse.latitude.toFixed(4)}, {warehouse.longitude.toFixed(4)}
+                      {warehouse.latitude}, {warehouse.longitude}
                     </span>
                   </div>
                 </td>

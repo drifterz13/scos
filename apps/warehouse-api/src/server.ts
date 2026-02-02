@@ -11,6 +11,7 @@ async function createServer(options: {
   consumer?: { start: () => Promise<void>; stop: () => Promise<void> };
 }) {
   await configureLogger(appConfig.logLevel);
+
   const logger = getCategoryLogger(["server"]);
 
   const allRoutes = {

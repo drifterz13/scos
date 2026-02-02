@@ -9,6 +9,7 @@ async function createServer(options: {
   routes: Record<string, (req: Request) => Response | Promise<Response>>;
 }) {
   await configureLogger(appConfig.logLevel);
+
   const logger = getCategoryLogger(["server"]);
 
   const allRoutes = {
