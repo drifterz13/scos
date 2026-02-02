@@ -5,7 +5,7 @@ import { Coordinates } from "../../domain/value-objects/coordinates.vo";
 import { Discount } from "../../domain/value-objects/discount.vo";
 import { Money } from "../../domain/value-objects/money.vo";
 import { Quantity } from "../../domain/value-objects/quantity.vo";
-import type { IWarehouseServiceClient } from "../interfaces/warehouse-service.client.interface";
+import type { PublishInventoryUpdateUseCase } from "./publish-inventory-update.use-case";
 import { SubmitOrderUseCase } from "./submit-order.use-case";
 import type { VerifyOrderUseCase } from "./verify-order.use-case";
 
@@ -15,10 +15,9 @@ describe("SubmitOrderUseCase", () => {
     getNextOrderNumber: mock(() => Promise.resolve(1)),
   } as unknown as IOrderRepository;
 
-  const mockWarehouseServiceClient = {
-    getAllWarehouses: mock(() => Promise.resolve([])),
-    updateInventory: mock(() => Promise.resolve()),
-  } as unknown as IWarehouseServiceClient;
+  const mockPublishInventoryUpdateUseCase = {
+    execute: mock(() => Promise.resolve()),
+  } as unknown as PublishInventoryUpdateUseCase;
 
   const mockVerifyOrderUseCase = {
     execute: mock(() =>
@@ -45,7 +44,11 @@ describe("SubmitOrderUseCase", () => {
     ),
   } as unknown as VerifyOrderUseCase;
 
-  const useCase = new SubmitOrderUseCase(mockOrderRepository, mockWarehouseServiceClient, mockVerifyOrderUseCase);
+  const useCase = new SubmitOrderUseCase(
+    mockOrderRepository,
+    mockPublishInventoryUpdateUseCase,
+    mockVerifyOrderUseCase,
+  );
 
   describe("execute", () => {
     test("submits valid order successfully", async () => {
@@ -72,7 +75,7 @@ describe("SubmitOrderUseCase", () => {
       expect(result.status).toBe(OrderStatus.SUBMITTED);
     });
 
-    test("calls warehouse service to update inventory", async () => {
+    test("publishes inventory update message", async () => {
       const coords = Coordinates.fromObject({ latitude: 34.05, longitude: -118.25 });
       const quantity = new Quantity(10);
       const unitPrice = Money.fromDollars(150);
@@ -91,7 +94,11 @@ describe("SubmitOrderUseCase", () => {
         shippingLongitude: -118.25,
       });
 
-      expect(mockWarehouseServiceClient.updateInventory).toHaveBeenCalledWith([{ warehouseId: "la", quantity: 10 }]);
+      expect(mockPublishInventoryUpdateUseCase.execute).toHaveBeenCalledWith({
+        orderId: order.id,
+        orderNumber: "1",
+        updates: [{ warehouseId: "la", quantity: 10 }],
+      });
     });
 
     test("rejects invalid order", async () => {

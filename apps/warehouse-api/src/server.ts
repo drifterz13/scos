@@ -1,4 +1,4 @@
-import { warehousesController } from "./composition-root";
+import { messageConsumer, warehousesController } from "./composition-root";
 import { appConfig } from "./config/app-config";
 import { createWarehouseRoutes } from "./presentation/routes/warehouses.routes";
 
@@ -26,3 +26,18 @@ const server = Bun.serve({
 });
 
 console.log(`Warehouse Services is running on ${server.url}`);
+
+// Start message consumer as background process
+messageConsumer.start().catch((error) => {
+  console.error("Message consumer error:", error);
+});
+
+// Graceful shutdown
+const shutdown = async () => {
+  console.log("Shutting down gracefully...");
+  await messageConsumer.stop();
+  server.stop();
+};
+
+process.on("SIGINT", shutdown);
+process.on("SIGTERM", shutdown);
