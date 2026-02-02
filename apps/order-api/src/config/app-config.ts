@@ -1,6 +1,7 @@
 import env from "env-var";
 
 export const appConfig = {
+  nodeEnv: env.get("NODE_ENV").default("development").asString(),
   port: env.get("PORT").default("3001").asPortNumber(),
   awsRegion: env.get("AWS_REGION").default("ap-southeast-1").asString(),
   dbHost: env.get("DB_HOST").default("localhost").asString(),

@@ -33,15 +33,6 @@ const warehouseImageUri = pulumi.interpolate`${warehouseRepo.url}:${imageTag}`;
 
 const rdsSecurityGroup = new aws.ec2.SecurityGroup(`${appName}-rds-sg`, {
   vpcId: vpc.vpcId,
-  ingress: [
-    {
-      protocol: "tcp",
-      fromPort: 5432,
-      toPort: 5432,
-      securityGroups: [],
-      description: "Allow PostgreSQL access from ECS tasks",
-    },
-  ],
   egress: [
     {
       protocol: "-1",
@@ -50,6 +41,9 @@ const rdsSecurityGroup = new aws.ec2.SecurityGroup(`${appName}-rds-sg`, {
       cidrBlocks: ["0.0.0.0/0"],
     },
   ],
+  tags: {
+    Name: `${appName}-rds-sg`,
+  },
 });
 
 const vpcLinkSecurityGroup = new aws.ec2.SecurityGroup(`${appName}-vpc-link-sg`, {
@@ -157,17 +151,13 @@ const dbSubnetGroup = new aws.rds.SubnetGroup(`${appName}-db-subnet-group`, {
   },
 });
 
-const orderDbSecret = new aws.secretsmanager.Secret(`${appName}-order-db-password`, {
-  description: "Order database password",
-});
+const orderDbSecret = new aws.secretsmanager.Secret(`${appName}-order-db-password`);
 new aws.secretsmanager.SecretVersion(`${appName}-order-db-password-version`, {
   secretId: orderDbSecret.id,
   secretString: config.requireSecret("orderDbPassword"),
 });
 
-const warehouseDbSecret = new aws.secretsmanager.Secret(`${appName}-warehouse-db-password`, {
-  description: "Warehouse database password",
-});
+const warehouseDbSecret = new aws.secretsmanager.Secret(`${appName}-warehouse-db-password`);
 new aws.secretsmanager.SecretVersion(`${appName}-warehouse-db-password-version`, {
   secretId: warehouseDbSecret.id,
   secretString: config.requireSecret("warehouseDbPassword"),
@@ -294,6 +284,7 @@ const orderService = new EcsService("order", {
   namespaceId: namespace.id,
   assignPublicIp: false,
   environment: [
+    { name: "NODE_ENV", value: "production" },
     { name: "PORT", value: "3001" },
     { name: "DB_HOST", value: orderDb.address },
     { name: "DB_PORT", value: "5432" },
@@ -329,6 +320,7 @@ const warehouseService = new EcsService("warehouse", {
   namespaceId: namespace.id,
   assignPublicIp: false,
   environment: [
+    { name: "NODE_ENV", value: "production" },
     { name: "PORT", value: "3002" },
     { name: "DB_HOST", value: warehouseDb.address },
     { name: "DB_PORT", value: "5432" },
