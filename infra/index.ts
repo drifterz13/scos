@@ -208,7 +208,7 @@ const warehouseToOrderQueue = new Queue(`${appName}-warehouse-to-order-queue`, {
 const region = aws.getRegionOutput();
 new aws.ec2.VpcEndpoint(`${appName}-sqs-endpoint`, {
   vpcId: vpc.vpcId,
-  serviceName: pulumi.interpolate`com.amazonaws.${region}.sqs`,
+  serviceName: pulumi.interpolate`com.amazonaws.${region.name}.sqs`,
   vpcEndpointType: "Interface",
   privateDnsEnabled: true,
   subnetIds: vpc.privateSubnetIds,

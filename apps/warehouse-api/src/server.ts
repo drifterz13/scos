@@ -6,7 +6,6 @@ import { withLogging } from "./presentation/middleware/logging-middleware";
 import { createWarehouseRoutes } from "./presentation/routes/warehouses.routes";
 
 await configureLogger();
-
 const logger = getCategoryLogger(["warehouse-api", "server"]);
 
 const headers = {

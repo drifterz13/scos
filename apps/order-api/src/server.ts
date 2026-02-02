@@ -5,7 +5,6 @@ import { withLogging } from "./presentation/middleware/logging-middleware";
 import { createOrderRoutes } from "./presentation/routes/orders.routes";
 
 await configureLogger();
-
 const logger = getCategoryLogger(["order-api", "server"]);
 
 const headers = {
