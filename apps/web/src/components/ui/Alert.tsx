@@ -12,7 +12,7 @@ export function Alert({ variant, children, icon }: AlertProps) {
   };
 
   return (
-    <div className={`px-4 py-3 rounded-sc mb-6 font-lato ${variantClasses[variant]} flex items-center gap-2`}>
+    <div className={`px-4 py-3 rounded mb-6 font-lato ${variantClasses[variant]} flex items-center gap-2`}>
       {icon}
       <span>{children}</span>
     </div>
