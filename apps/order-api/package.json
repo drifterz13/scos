@@ -11,8 +11,9 @@
     "format": "biome check --write .",
     "ci": "biome ci .",
     "test:unit": "echo \"No tests specified\" && exit 0",
-    "migration:create": "bun run scripts/create-migration.ts -- --name",
-    "migration:run": "bun run scripts/run-migration.ts"
+    "db:reset": "bun run scripts/reset-db.ts",
+    "db:migrate": "bun run scripts/migrate-db.ts",
+    "migration:create": "bun run scripts/create-migration.ts -- --name"
   },
   "devDependencies": {
     "@scos/tsconfig": "workspace:*",
