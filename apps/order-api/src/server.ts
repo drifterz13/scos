@@ -1,6 +1,12 @@
 import { ordersController } from "./composition-root";
 import { appConfig } from "./config/app-config";
+import { configureLogger, getCategoryLogger } from "./infra/logging/logger";
+import { withLogging } from "./presentation/middleware/logging-middleware";
 import { createOrderRoutes } from "./presentation/routes/orders.routes";
+
+await configureLogger();
+
+const logger = getCategoryLogger(["order-api", "server"]);
 
 const headers = {
   "Access-Control-Allow-Origin": "*",
@@ -15,7 +21,7 @@ const server = Bun.serve({
   routes: {
     "/": () => new Response("Order Service is running", { status: 200, headers }),
     "/health": () => new Response("OK", { status: 200, headers }),
-    ...orderRoutes,
+    ...withLogging(orderRoutes),
   },
   async fetch(req) {
     if (req.method === "OPTIONS") {
@@ -25,4 +31,4 @@ const server = Bun.serve({
   },
 });
 
-console.log(`Order Services is running on ${server.url}`);
+logger.info`Order Service is running on ${server.url}`;

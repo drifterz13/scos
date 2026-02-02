@@ -12,4 +12,5 @@ export const appConfig = {
   awsSQSEndpoint: env.get("AWS_SQS_ENDPOINT").default("http://localhost:4566").asString(),
   orderToWarehouseQueueUrl: env.get("ORDER_TO_WAREHOUSE_QUEUE_URL").required().asString(),
   warehouseServiceUrl: env.get("WAREHOUSE_SERVICE_URL").required().asString(),
+  logLevel: env.get("LOG_LEVEL").default("debug").asString() as "debug" | "info" | "warning" | "error",
 };

@@ -5,13 +5,13 @@ import { Discount } from "../../domain/value-objects/discount.vo";
 import { Money } from "../../domain/value-objects/money.vo";
 import { Quantity } from "../../domain/value-objects/quantity.vo";
 import type { OrderResponseDto } from "../dto/order-response.dto";
-import type { IWarehouseServiceClient } from "../interfaces/warehouse-service.client.interface";
+import type { PublishInventoryUpdateUseCase } from "./publish-inventory-update.use-case";
 import type { VerifyOrderUseCase } from "./verify-order.use-case";
 
 export class SubmitOrderUseCase {
   constructor(
     private orderRepository: IOrderRepository,
-    private warehouseServiceClient: IWarehouseServiceClient,
+    private publishInventoryUpdateUseCase: PublishInventoryUpdateUseCase,
     private verifyOrderUseCase: VerifyOrderUseCase,
   ) {}
 
@@ -47,7 +47,11 @@ export class SubmitOrderUseCase {
       warehouseId: plan.warehouseId,
       quantity: plan.quantity,
     }));
-    await this.warehouseServiceClient.updateInventory(inventoryUpdates);
+    await this.publishInventoryUpdateUseCase.execute({
+      orderId: order.id,
+      orderNumber: String(order.orderNumber),
+      updates: inventoryUpdates,
+    });
 
     return this.toDto(savedOrder, verification.orderPreview.totalDiscountAmount);
   }

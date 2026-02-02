@@ -1,6 +1,13 @@
-import { warehousesController } from "./composition-root";
+import { dispose } from "@logtape/logtape";
+import { messageConsumer, warehousesController } from "./composition-root";
 import { appConfig } from "./config/app-config";
+import { configureLogger, getCategoryLogger } from "./infra/logging/logger";
+import { withLogging } from "./presentation/middleware/logging-middleware";
 import { createWarehouseRoutes } from "./presentation/routes/warehouses.routes";
+
+await configureLogger();
+
+const logger = getCategoryLogger(["warehouse-api", "server"]);
 
 const headers = {
   "Access-Control-Allow-Origin": "*",
@@ -15,7 +22,7 @@ const server = Bun.serve({
   routes: {
     "/": () => new Response("Warehouse Service is running", { status: 200, headers }),
     "/health": () => new Response("OK", { status: 200, headers }),
-    ...warehouseRoutes,
+    ...withLogging(warehouseRoutes),
   },
   async fetch(req) {
     if (req.method === "OPTIONS") {
@@ -25,4 +32,24 @@ const server = Bun.serve({
   },
 });
 
-console.log(`Warehouse Services is running on ${server.url}`);
+logger.info`Warehouse Service is running on ${server.url}`;
+
+messageConsumer.start().catch((error) => {
+  logger.error`Message consumer error: ${error}`;
+});
+
+const shutdown = async () => {
+  try {
+    logger.info`Shutting down gracefully...`;
+    await messageConsumer.stop();
+    await server.stop(true);
+    await dispose();
+    process.exit(0);
+  } catch (error) {
+    logger.error`Error during shutdown: ${error}`;
+    process.exit(1);
+  }
+};
+
+process.on("SIGINT", shutdown);
+process.on("SIGTERM", shutdown);

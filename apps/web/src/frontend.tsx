@@ -13,10 +13,9 @@ import { App } from "./App";
 const queryClient = new QueryClient({
   defaultOptions: {
     mutations: {
-      retry: 1,
+      retry: 0,
     },
     queries: {
-      retry: 1,
       refetchOnWindowFocus: false,
     },
   },
