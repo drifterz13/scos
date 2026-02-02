@@ -17,11 +17,11 @@
     "apps/order-api": {
       "name": "order-api",
       "dependencies": {
-        "@aws-sdk/client-sqs": "^3.980.0",
-        "@logtape/logtape": "^2.0.2",
-        "@logtape/pretty": "^2.0.2",
-        "env-var": "^7.5.0",
-        "zod": "^4.3.6",
+        "@aws-sdk/client-sqs": "catalog:",
+        "@logtape/logtape": "catalog:",
+        "@logtape/pretty": "catalog:",
+        "env-var": "catalog:",
+        "zod": "catalog:",
       },
       "devDependencies": {
         "@scos/tsconfig": "workspace:*",
@@ -34,11 +34,11 @@
     "apps/warehouse-api": {
       "name": "warehouse-api",
       "dependencies": {
-        "@aws-sdk/client-sqs": "^3.980.0",
-        "@logtape/logtape": "^2.0.2",
-        "@logtape/pretty": "^2.0.2",
-        "env-var": "^7.5.0",
-        "zod": "^4.3.6",
+        "@aws-sdk/client-sqs": "catalog:",
+        "@logtape/logtape": "catalog:",
+        "@logtape/pretty": "catalog:",
+        "env-var": "catalog:",
+        "zod": "catalog:",
       },
       "devDependencies": {
         "@scos/tsconfig": "workspace:*",
@@ -75,6 +75,13 @@
     "packages/tsconfig": {
       "name": "@scos/tsconfig",
     },
+  },
+  "catalog": {
+    "@aws-sdk/client-sqs": "^3.980.0",
+    "@logtape/logtape": "^2.0.2",
+    "@logtape/pretty": "^2.0.2",
+    "env-var": "^7.5.0",
+    "zod": "^4.3.6",
   },
   "packages": {
     "@aws-crypto/sha256-browser": ["@aws-crypto/sha256-browser@5.2.0", "", { "dependencies": { "@aws-crypto/sha256-js": "^5.2.0", "@aws-crypto/supports-web-crypto": "^5.2.0", "@aws-crypto/util": "^5.2.0", "@aws-sdk/types": "^3.222.0", "@aws-sdk/util-locate-window": "^3.0.0", "@smithy/util-utf8": "^2.0.0", "tslib": "^2.6.2" } }, "sha512-AXfN/lGotSQwu6HNcEsIASo7kWXZ5HYWvfOmSNKDsEqC4OashTp8alTmaz+F7TC2L083SFv5RdB+qU3Vs1kZqw=="],
