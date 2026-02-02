@@ -50,28 +50,6 @@ services:
     volumes:
       - warehouse_pg_data:/var/lib/postgresql/data
 
-  # order-svc:
-  #   build:
-  #     context: .
-  #     dockerfile: ./apps/order-api/Dockerfile
-  #   ports:
-  #     - "3001:3001"
-  #   environment:
-  #     - PORT=3001
-  #   depends_on:
-  #     - order-db
-
-  # warehouse-svc:
-  #   build:
-  #     context: .
-  #     dockerfile: ./apps/warehouse-api/Dockerfile
-  #   ports:
-  #     - "3002:3002"
-  #   environment:
-  #     - PORT=3002
-  #   depends_on:
-  #     - warehouse-db
-
 volumes:
   order_pg_data:
   warehouse_pg_data:

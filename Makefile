@@ -1,4 +1,4 @@
-.PHONY: docker-order docker-warehouse docker-web docker-run \
+.PHONY: docker-order docker-warehouse docker-web docker-run dev-all \
         ssm-warehousedb ssm-orderdb
 
 docker-web:
@@ -24,3 +24,6 @@ ssm-orderdb:
 		--target i-03508a7913ccb1b99 \
 		--document-name AWS-StartPortForwardingSessionToRemoteHost \
 		--parameters '{"host":["scos-order-dbbdf3b32.cjemee80aitz.ap-southeast-1.rds.amazonaws.com"], "portNumber":["5432"], "localPortNumber":["5444"]}'
+
+dev-all:
+	bun run dev:all

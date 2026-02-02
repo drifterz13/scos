@@ -20,5 +20,5 @@ const processInventoryUpdateMessageUseCase = new ProcessInventoryUpdateMessageUs
 const messageConsumer = new MessageConsumer(queueService, processInventoryUpdateMessageUseCase);
 
 // Presentation Layer
-export const warehousesController = new WarehousesController(getWarehousesUseCase, updateInventoryUseCase);
+export const warehousesController = new WarehousesController(getWarehousesUseCase);
 export { messageConsumer };
