@@ -1,6 +1,6 @@
+import { getCategoryLogger } from "@scos/shared";
 import { InventoryUpdateMessageSchema, MESSAGE_TYPE } from "../application/dto/inventory-update-message.dto";
 import type { ProcessInventoryUpdateMessageUseCase } from "../application/use-cases/process-inventory-update-message.use-case";
-import { getCategoryLogger } from "./logging/logger";
 import type { QueueMessage, QueueService } from "./queue";
 
 const logger = getCategoryLogger(["warehouse-api", "consumer"]);

@@ -1,4 +1,4 @@
-import { getCategoryLogger } from "../../infra/logging/logger";
+import { getCategoryLogger } from "@scos/shared";
 import { logRequest } from "../../infra/logging/request-logger";
 
 const logger = getCategoryLogger(["warehouse-api", "middleware"]);

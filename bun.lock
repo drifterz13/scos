@@ -17,13 +17,14 @@
     "apps/order-api": {
       "name": "order-api",
       "dependencies": {
-        "@aws-sdk/client-sqs": "^3.980.0",
-        "@logtape/logtape": "^2.0.2",
-        "@logtape/pretty": "^2.0.2",
-        "env-var": "^7.5.0",
-        "zod": "^4.3.6",
+        "@aws-sdk/client-sqs": "catalog:",
+        "@logtape/logtape": "catalog:",
+        "@logtape/pretty": "catalog:",
+        "env-var": "catalog:",
+        "zod": "catalog:",
       },
       "devDependencies": {
+        "@scos/shared": "workspace:*",
         "@scos/tsconfig": "workspace:*",
         "@types/bun": "latest",
       },
@@ -34,13 +35,14 @@
     "apps/warehouse-api": {
       "name": "warehouse-api",
       "dependencies": {
-        "@aws-sdk/client-sqs": "^3.980.0",
-        "@logtape/logtape": "^2.0.2",
-        "@logtape/pretty": "^2.0.2",
-        "env-var": "^7.5.0",
-        "zod": "^4.3.6",
+        "@aws-sdk/client-sqs": "catalog:",
+        "@logtape/logtape": "catalog:",
+        "@logtape/pretty": "catalog:",
+        "env-var": "catalog:",
+        "zod": "catalog:",
       },
       "devDependencies": {
+        "@scos/shared": "workspace:*",
         "@scos/tsconfig": "workspace:*",
         "@types/bun": "latest",
       },
@@ -72,9 +74,28 @@
         "vite": "^7.3.1",
       },
     },
+    "packages/shared": {
+      "name": "@scos/shared",
+      "version": "1.0.0",
+      "dependencies": {
+        "@logtape/logtape": "catalog:",
+        "@logtape/pretty": "catalog:",
+      },
+      "devDependencies": {
+        "@scos/tsconfig": "workspace:*",
+        "typescript": "^5",
+      },
+    },
     "packages/tsconfig": {
       "name": "@scos/tsconfig",
     },
+  },
+  "catalog": {
+    "@aws-sdk/client-sqs": "^3.980.0",
+    "@logtape/logtape": "^2.0.2",
+    "@logtape/pretty": "^2.0.2",
+    "env-var": "^7.5.0",
+    "zod": "^4.3.6",
   },
   "packages": {
     "@aws-crypto/sha256-browser": ["@aws-crypto/sha256-browser@5.2.0", "", { "dependencies": { "@aws-crypto/sha256-js": "^5.2.0", "@aws-crypto/supports-web-crypto": "^5.2.0", "@aws-crypto/util": "^5.2.0", "@aws-sdk/types": "^3.222.0", "@aws-sdk/util-locate-window": "^3.0.0", "@smithy/util-utf8": "^2.0.0", "tslib": "^2.6.2" } }, "sha512-AXfN/lGotSQwu6HNcEsIASo7kWXZ5HYWvfOmSNKDsEqC4OashTp8alTmaz+F7TC2L083SFv5RdB+qU3Vs1kZqw=="],
@@ -346,6 +367,8 @@
     "@rollup/rollup-win32-x64-gnu": ["@rollup/rollup-win32-x64-gnu@4.57.1", "", { "os": "win32", "cpu": "x64" }, "sha512-VMBH2eOOaKGtIJYleXsi2B8CPVADrh+TyNxJ4mWPnKfLB/DBUmzW+5m1xUrcwWoMfSLagIRpjUFeW5CO5hyciQ=="],
 
     "@rollup/rollup-win32-x64-msvc": ["@rollup/rollup-win32-x64-msvc@4.57.1", "", { "os": "win32", "cpu": "x64" }, "sha512-mxRFDdHIWRxg3UfIIAwCm6NzvxG0jDX/wBN6KsQFTvKFqqg9vTrWUE68qEjHt19A5wwx5X5aUi2zuZT7YR0jrA=="],
+
+    "@scos/shared": ["@scos/shared@workspace:packages/shared"],
 
     "@scos/tsconfig": ["@scos/tsconfig@workspace:packages/tsconfig"],
 
