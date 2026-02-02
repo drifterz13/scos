@@ -3,20 +3,15 @@ import { Warehouse } from "../../domain/entities/warehouse.entity";
 import type { IWarehouseRepository } from "../../domain/repositories/warehouse.repository.interface";
 import { Coordinates } from "../../domain/value-objects/coordinates.vo";
 
-type WarehouseRow = {
-  id: string;
-  name: string;
-  latitude: number;
-  longitude: number;
-  stock_quantity: number;
-};
-
 export class WarehouseRepository implements IWarehouseRepository {
   constructor(private sql: SQL) {}
 
   async findAll(): Promise<Warehouse[]> {
     const result = await this.sql`SELECT * FROM warehouses`;
-    return result.map((row: WarehouseRow) => this.mapToEntity(row));
+    return result.map(
+      (row: { id: string; name: string; latitude: string; longitude: string; stock_quantity: number }) =>
+        this.mapToEntity(row),
+    );
   }
 
   async updateStockBatch(updates: Array<{ warehouseId: string; quantity: number }>): Promise<void> {
@@ -35,14 +30,17 @@ export class WarehouseRepository implements IWarehouseRepository {
   private mapToEntity(row: {
     id: string;
     name: string;
-    latitude: string | number;
-    longitude: string | number;
+    latitude: string;
+    longitude: string;
     stock_quantity: number;
   }): Warehouse {
     return new Warehouse(
       row.id,
       row.name,
-      Coordinates.fromObject({ latitude: +row.latitude, longitude: +row.longitude }),
+      Coordinates.fromObject({
+        latitude: +row.latitude,
+        longitude: +row.longitude,
+      }),
       row.stock_quantity,
     );
   }

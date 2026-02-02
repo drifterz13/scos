@@ -41,8 +41,8 @@ export class OrderRepository implements IOrderRepository {
   private mapToEntity(row: {
     id: string;
     order_number: number;
-    shipping_latitude: number;
-    shipping_longitude: number;
+    shipping_latitude: string;
+    shipping_longitude: string;
     quantity: number;
     unit_price_at_time: number;
     discount_percentage: number;
@@ -53,7 +53,7 @@ export class OrderRepository implements IOrderRepository {
     return new Order(
       row.id,
       row.order_number,
-      Coordinates.fromObject({ latitude: row.shipping_latitude, longitude: row.shipping_longitude }),
+      Coordinates.fromObject({ latitude: +row.shipping_latitude, longitude: +row.shipping_longitude }),
       new Quantity(row.quantity),
       Money.fromDollars(row.unit_price_at_time),
       new Discount(row.discount_percentage),
