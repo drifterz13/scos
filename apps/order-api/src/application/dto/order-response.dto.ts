@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const OrderResponseDtoSchema = z.object({
-  id: z.string().uuid(),
+  id: z.uuid(),
   orderNumber: z.number().int().positive(),
   shippingLatitude: z.number().min(-90).max(90),
   shippingLongitude: z.number().min(-180).max(180),
