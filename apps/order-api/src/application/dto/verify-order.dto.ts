@@ -9,7 +9,7 @@ export const VerifyOrderSchema = z.object({
 export type VerifyOrderRequestDto = z.infer<typeof VerifyOrderSchema>;
 
 export const FulfillmentPlanDtoSchema = z.object({
-  warehouseId: z.string().uuid(),
+  warehouseId: z.uuid(),
   warehouseName: z.string(),
   quantity: z.number().positive().int(),
   distance: z.number().nonnegative(),

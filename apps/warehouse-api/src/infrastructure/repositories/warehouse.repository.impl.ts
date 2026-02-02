@@ -35,14 +35,14 @@ export class WarehouseRepository implements IWarehouseRepository {
   private mapToEntity(row: {
     id: string;
     name: string;
-    latitude: number;
-    longitude: number;
+    latitude: string | number;
+    longitude: string | number;
     stock_quantity: number;
   }): Warehouse {
     return new Warehouse(
       row.id,
       row.name,
-      Coordinates.fromObject({ latitude: row.latitude, longitude: row.longitude }),
+      Coordinates.fromObject({ latitude: +row.latitude, longitude: +row.longitude }),
       row.stock_quantity,
     );
   }

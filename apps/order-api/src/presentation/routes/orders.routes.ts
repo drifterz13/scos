@@ -17,6 +17,9 @@ function handleErrorResponse(error: unknown): Response {
 export function createOrderRoutes(controller: OrdersController) {
   return {
     "/orders/verify": async (req: Request) => {
+      if (req.method === "OPTIONS") {
+        return new Response(null, { status: 204, headers });
+      }
       if (req.method !== "POST") {
         return new Response("Method Not Allowed", { status: 405, headers });
       }
@@ -31,6 +34,9 @@ export function createOrderRoutes(controller: OrdersController) {
     },
 
     "/orders/submit": async (req: Request) => {
+      if (req.method === "OPTIONS") {
+        return new Response(null, { status: 204, headers });
+      }
       if (req.method !== "POST") {
         return new Response("Method Not Allowed", { status: 405, headers });
       }

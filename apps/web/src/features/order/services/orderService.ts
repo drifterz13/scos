@@ -1,13 +1,37 @@
-import type { SubmitRequest, SubmitResponse, VerifyRequest, VerifyResponse } from "../types/order";
+import { getApiUrl } from "../../../lib/api/config";
+import type { SubmitResponse, VerifyResponse } from "../types/order";
+import type { OrderResponse, VerifyOrderData, VerifyOrderResponse } from "./orderSchemas";
+import { OrderResponseSchema, VerifyOrderResponseSchema } from "./orderSchemas";
 
-// Base API URL - can be configured via environment variables
-const API_BASE_URL = import.meta.env?.VITE_API_BASE_URL || "http://localhost:8080";
+function transformVerifyResponse(data: VerifyOrderResponse): VerifyResponse {
+  const { orderPreview, isValid, validationMessage } = data;
 
-/**
- * Verify order pricing without submitting
- */
-export async function verifyOrder(data: VerifyRequest): Promise<VerifyResponse> {
-  const response = await fetch(`${API_BASE_URL}/api/orders/verify`, {
+  return {
+    unitPrice: orderPreview.unitPrice,
+    subtotal: orderPreview.unitPrice * orderPreview.quantity,
+    discountPercentage: orderPreview.discountPercentage,
+    discountAmount: orderPreview.totalDiscountAmount,
+    totalAfterDiscount: orderPreview.totalPrice - orderPreview.totalShippingCost,
+    shippingCost: orderPreview.totalShippingCost,
+    totalPrice: orderPreview.totalPrice,
+    isValid,
+    invalidReason: validationMessage,
+  };
+}
+
+function transformSubmitResponse(data: OrderResponse): SubmitResponse {
+  return {
+    success: true,
+    orderNumber: data.orderNumber,
+    orderId: data.id,
+    totalPrice: data.totalPrice,
+    discountAmount: data.totalDiscountAmount,
+    shippingCost: data.totalShippingCost,
+  };
+}
+
+export async function verifyOrder(data: VerifyOrderData): Promise<VerifyResponse> {
+  const response = await fetch(getApiUrl("/orders/verify"), {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -19,14 +43,13 @@ export async function verifyOrder(data: VerifyRequest): Promise<VerifyResponse> 
     throw new Error(`Failed to verify order: ${response.statusText}`);
   }
 
-  return response.json() as Promise<VerifyResponse>;
+  const rawData = await response.json();
+  const validatedData = VerifyOrderResponseSchema.parse(rawData);
+  return transformVerifyResponse(validatedData);
 }
 
-/**
- * Submit order and update inventory
- */
-export async function submitOrder(data: SubmitRequest): Promise<SubmitResponse> {
-  const response = await fetch(`${API_BASE_URL}/api/orders/submit`, {
+export async function submitOrder(data: VerifyOrderData): Promise<SubmitResponse> {
+  const response = await fetch(getApiUrl("/orders/submit"), {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -38,5 +61,7 @@ export async function submitOrder(data: SubmitRequest): Promise<SubmitResponse> 
     throw new Error(`Failed to submit order: ${response.statusText}`);
   }
 
-  return response.json() as Promise<SubmitResponse>;
+  const rawData = await response.json();
+  const validatedData = OrderResponseSchema.parse(rawData);
+  return transformSubmitResponse(validatedData);
 }
