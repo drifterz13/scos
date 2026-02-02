@@ -1,6 +1,9 @@
 import { InventoryUpdateMessageSchema, MESSAGE_TYPE } from "../application/dto/inventory-update-message.dto";
 import type { ProcessInventoryUpdateMessageUseCase } from "../application/use-cases/process-inventory-update-message.use-case";
+import { getCategoryLogger } from "./logging/logger";
 import type { QueueMessage, QueueService } from "./queue";
+
+const logger = getCategoryLogger(["warehouse-api", "consumer"]);
 
 export class MessageConsumer {
   private isRunning = false;
@@ -12,7 +15,7 @@ export class MessageConsumer {
 
   async start(): Promise<void> {
     this.isRunning = true;
-    console.log("Message consumer started");
+    logger.info`Message consumer started`;
 
     while (this.isRunning) {
       try {
@@ -23,7 +26,7 @@ export class MessageConsumer {
           await this.queueService.deleteMessage(message.receiptHandle);
         }
       } catch (error) {
-        console.error("Error receiving messages:", error);
+        logger.error`Error receiving messages: ${error}`;
         await Bun.sleep(5000);
       }
     }
@@ -31,7 +34,7 @@ export class MessageConsumer {
 
   async stop(): Promise<void> {
     this.isRunning = false;
-    console.log("Message consumer stopped");
+    logger.info`Message consumer stopped`;
   }
 
   private async processMessage(message: QueueMessage): Promise<void> {
@@ -40,15 +43,15 @@ export class MessageConsumer {
       const parsed = InventoryUpdateMessageSchema.parse(body);
 
       if (parsed.messageType !== MESSAGE_TYPE) {
-        console.warn(`Unknown message type: ${parsed.messageType}, skipping`);
+        logger.warn`Unknown message type: ${parsed.messageType}, skipping`;
         return;
       }
 
-      console.log(`Processing inventory update for order ${parsed.orderNumber}`);
+      logger.debug`Processing inventory update for order ${parsed.orderNumber}`;
       await this.processInventoryUpdateMessageUseCase.execute(parsed);
-      console.log(`Successfully processed inventory update for order ${parsed.orderNumber}`);
+      logger.info`Successfully processed inventory update for order ${parsed.orderNumber}`;
     } catch (error) {
-      console.error(`Error processing message ${message.messageId}:`, error);
+      logger.error`Error processing message ${message.messageId}: ${error}`;
       throw error;
     }
   }
