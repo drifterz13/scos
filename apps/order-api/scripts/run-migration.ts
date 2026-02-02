@@ -3,7 +3,7 @@ import { SQL } from "bun";
 
 async function run() {
   const { DB_USER, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME } = Bun.env;
-  const dbUrl = `postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=require`;
+  const dbUrl = `postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}`;
 
   const sql = new SQL(dbUrl);
   const [result] = await sql`

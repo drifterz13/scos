@@ -11,8 +11,16 @@ const server = Bun.serve({
   routes: {
     "/": () => new Response("Order Service is running", { status: 200, headers }),
     "/summary": async () => {
-      const result = await fetch(`${appConfig.warehouseServiceUrl}`);
-      const data = await result.json();
+      const response = await fetch(appConfig.warehouseServiceUrl, {
+        headers: { "Content-Type": "application/json" },
+      });
+      if (!response.ok) {
+        return new Response("Failed to fetch warehouse data", {
+          status: 502,
+          headers,
+        });
+      }
+      const data = await response.json();
 
       return Response.json(data);
     },
