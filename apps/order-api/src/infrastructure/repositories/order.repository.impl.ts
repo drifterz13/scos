@@ -18,7 +18,10 @@ export class OrderRepository implements IOrderRepository {
       quantity: order.quantity.value,
       unit_price_at_time: order.unitPriceAtTime.toDollars(),
       discount_percentage: order.discount.percentage,
-      total_discount_amount: 0,
+      total_discount_amount: order.unitPriceAtTime
+        .multiply(order.quantity.value)
+        .applyPercentage(order.discount.percentage)
+        .toDollars(),
       total_shipping_cost: order.shippingCost.toDollars(),
       total_price_final: order.totalPrice.toDollars(),
       status: order.status,
