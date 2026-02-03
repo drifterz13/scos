@@ -1,20 +1,29 @@
-## SCOS - Features
+## SCOS - Overview
 
-- **Verify Order**: Check order details by inputting quantity and coordinates (latitude and longitude).
-- **Calculate Shipping**: Automatically calculate shipping costs based on distance.
-- **Create Order**: Submit and process new orders.
-- **View Warehouses**: (Extra) View details and stock of available warehouses.
+### Access URLs
 
-**URL**: http://scos-web-bucket-6cf380d.s3-website-ap-southeast-1.amazonaws.com/
+| Resource | Link |
+| --- | --- |
+| **Web Interface** | [SCOS Dashboard](http://scos-web-bucket-6cf380d.s3-website-ap-southeast-1.amazonaws.com/) |
+| **Order API Docs** | [Swagger/OpenAPI Documentation](https://r86ajekc64.execute-api.ap-southeast-1.amazonaws.com/api/orders/docs) |
+| **Warehouse API Docs** | [Swagger/OpenAPI Documentation](https://r86ajekc64.execute-api.ap-southeast-1.amazonaws.com/api/warehouse/docs) |
 
-### API Endpoints
 
-**Order API (`/api/orders`)**:
-- `POST /verify`
-- `POST /submit`
+### Tech Stack
 
-**Warehouse API (`/api/warehouses`)**:
-- `GET /list`
+| Category | Technology |
+| --- | --- |
+| **Monorepo** | [Turbo](https://turbo.build/) |
+| **Runtime** | [Bun](https://bun.sh/) |
+| **Frontend (UI)** | [React](https://react.dev/) |
+| **Infra** | [AWS](https://aws.amazon.com/) |
+| **Database** | [AWS RDS](https://aws.amazon.com/rds/) |
+| **Queue** | [AWS SQS](https://aws.amazon.com/sqs/) |
+| **API Docs** | [OpenAPI](https://www.openapis.org/) & [Scalar](https://scalar.com/) |
+| **CI/CD & IaC** | [GitHub Actions](https://github.com/features/actions) & [Pulumi](https://www.pulumi.com/) |
+
+
+---
 
 ## Project Setup
 
@@ -108,18 +117,19 @@ apps/web/
 
 ## Architectural Design
 
-The system uses **Microservices** so each part can run on its own.
+The system uses a **Microservices** architecture to separate different domains of the application. Each service maintains its own database and can scale independently. This architectural style emphasizes scalability, performance, and extensibility.
 
 ### Performance & Scalability
 
 * **Cloud:** We use **AWS ECS Fargate** to scale automatically and **AWS Cloud Map** so services can find each other.
 * **Background Jobs:** We use **AWS SQS** for heavy tasks. This keeps the app fast because the user doesn't have to wait for the task to finish.
-* **Fast Runtime:** We use **Bun** because it starts and runs much faster than Node.js.
+* **Fast Runtime:** We use **Bun** because it starts and runs faster than Node.js.
 
 ### Data Consistency
 
 * **Database:** We use **AWS RDS (PostgreSQL)**. We use the **Read Committed** level and **ACID transactions** to make sure data is always correct and never lost.
 * **Syncing Services:** (Planned) We will use the **Outbox Pattern** or **CDC** to make sure all services stay in sync.
+* **Eventual Consistency**: We trade off immediate consistency for performance and scalability. Some operations may take time to reflect across services.
 
 ### Extensibility
 
@@ -129,7 +139,7 @@ The system uses **Microservices** so each part can run on its own.
 
 ## Testing Strategy
 
-Because the **Domain** is separate from the database, we can write very fast tests for the business rules.
+Because the **Domain** is separate from the database, we can write a lot of unit tests for the business rules.
 
 ### Test Coverage
 
@@ -155,9 +165,15 @@ Because the **Domain** is separate from the database, we can write very fast tes
 * [ ] **Outbox Pattern:** Build a service to send messages to SQS safely.
 * [ ] **Event Consumer:** Build a service to process stock updates.
 
+### Features
+
+* [ ] **Authentication**: Secure login so only authorized users can access the system.
+* [ ] **Order History**: A page to view all placed orders.
+* [ ] **Order Details**: A page to view order information.
+
 ### Others
 
-* [ ] **Documentation:** Set up **Swagger** for API docs.
+* [x] **Documentation:** Set up **Swagger** for API docs.
 * [ ] **Logging:** Move logs to **CloudWatch** for better monitoring.
 * [ ] **Error Handling:** Define clear error codes and messages for the APIs.
 
