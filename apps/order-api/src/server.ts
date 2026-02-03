@@ -2,6 +2,7 @@ import { configureLogger, DEFAULT_CORS_HEADERS, getCategoryLogger } from "@scos/
 import { ordersController } from "./composition-root";
 import { appConfig } from "./config/app-config";
 import { withLogging } from "./presentation/middleware/logging-middleware";
+import { createDocsRoutes } from "./presentation/routes/docs.routes";
 import { createOrderRoutes } from "./presentation/routes/orders.routes";
 
 async function createServer(options: {
@@ -40,5 +41,8 @@ async function createServer(options: {
 
 await createServer({
   port: appConfig.port,
-  routes: withLogging(createOrderRoutes(ordersController)),
+  routes: {
+    ...withLogging(createOrderRoutes(ordersController)),
+    ...createDocsRoutes(),
+  },
 });
