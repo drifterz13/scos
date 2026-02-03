@@ -1,7 +1,9 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { useSubmitOrder, useVerifyOrder } from "../hooks/useOrderApi";
+import { orderSchema } from "../schemas/orderSchema";
 import type { SubmitResponse, VerifyResponse } from "../types/order";
 import { OrderConfirmation } from "./OrderConfirmation";
 import { OrderForm } from "./OrderForm";
@@ -16,6 +18,7 @@ type FormValues = {
 export function OrderManagement() {
   const form = useForm<FormValues>({
     mode: "onChange",
+    resolver: zodResolver(orderSchema),
     defaultValues: {
       quantity: "",
       latitude: "",

@@ -17,6 +17,7 @@ interface OrderFormProps {
 
 export function OrderForm({ form, onVerify, onSubmit, isVerifying, isSubmitting, isSubmitDisabled }: OrderFormProps) {
   const { formState } = form;
+  const { errors } = formState;
 
   return (
     <div className="bg-white rounded-lg shadow border border-tertiary-border p-8">
@@ -28,10 +29,11 @@ export function OrderForm({ form, onVerify, onSubmit, isVerifying, isSubmitting,
           label="Quantity"
           type="number"
           value={form.watch("quantity")}
-          onChange={(value) => form.setValue("quantity", value)}
+          onChange={(value) => form.setValue("quantity", value, { shouldValidate: true })}
           placeholder="Enter quantity (minimum 1)"
           min={1}
           step="1"
+          error={errors.quantity?.message}
         />
 
         <Input
@@ -39,11 +41,12 @@ export function OrderForm({ form, onVerify, onSubmit, isVerifying, isSubmitting,
           label="Latitude"
           type="number"
           value={form.watch("latitude")}
-          onChange={(value) => form.setValue("latitude", value)}
+          onChange={(value) => form.setValue("latitude", value, { shouldValidate: true })}
           placeholder="Enter latitude (-90 to 90)"
           min={-90}
           max={90}
           step="any"
+          error={errors.latitude?.message}
         />
 
         <Input
@@ -51,11 +54,12 @@ export function OrderForm({ form, onVerify, onSubmit, isVerifying, isSubmitting,
           label="Longitude"
           type="number"
           value={form.watch("longitude")}
-          onChange={(value) => form.setValue("longitude", value)}
+          onChange={(value) => form.setValue("longitude", value, { shouldValidate: true })}
           placeholder="Enter longitude (-180 to 180)"
           min={-180}
           max={180}
           step="any"
+          error={errors.longitude?.message}
         />
       </div>
 
