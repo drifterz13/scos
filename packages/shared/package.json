@@ -8,8 +8,10 @@
     ".": "./src/index.ts"
   },
   "dependencies": {
+    "@asteasolutions/zod-to-openapi": "^8.4.0",
     "@logtape/logtape": "catalog:",
-    "@logtape/pretty": "catalog:"
+    "@logtape/pretty": "catalog:",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@scos/tsconfig": "workspace:*",

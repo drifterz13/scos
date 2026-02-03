@@ -3,6 +3,7 @@ import { configureLogger, DEFAULT_CORS_HEADERS, getCategoryLogger } from "@scos/
 import { messageConsumer, warehousesController } from "./composition-root";
 import { appConfig } from "./config/app-config";
 import { withLogging } from "./presentation/middleware/logging-middleware";
+import { createDocsRoutes } from "./presentation/routes/docs.routes";
 import { createWarehouseRoutes } from "./presentation/routes/warehouses.routes";
 
 async function createServer(options: {
@@ -66,6 +67,9 @@ async function createServer(options: {
 
 await createServer({
   port: appConfig.port,
-  routes: withLogging(createWarehouseRoutes(warehousesController)),
+  routes: {
+    ...withLogging(createWarehouseRoutes(warehousesController)),
+    ...createDocsRoutes(),
+  },
   consumer: messageConsumer,
 });
