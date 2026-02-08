@@ -1,5 +1,5 @@
 import { getCategoryLogger } from "@scos/shared";
-import { logRequest } from "../../infra/logging/request-logger";
+import { logRequest } from "../../infrastructure/logging/request-logger";
 
 const logger = getCategoryLogger(["order-api", "middleware"]);
 

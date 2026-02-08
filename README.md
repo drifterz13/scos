@@ -54,7 +54,7 @@ bun run db:migrate
 bun run db:seed
 
 # 5. Start all services
-make dev-all
+bun dev-all
 ```
 
 ---

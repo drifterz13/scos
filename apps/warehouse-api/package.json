@@ -10,7 +10,7 @@
     "lint": "biome check --write .",
     "format": "biome check --write .",
     "ci": "biome ci .",
-    "test:unit": "echo \"No tests specified\" && exit 0",
+    "test:unit": "bun test",
     "db:seed": "bun run scripts/seed-db.ts",
     "db:reset": "bun run scripts/reset-db.ts",
     "db:migrate": "bun run scripts/migrate-db.ts",

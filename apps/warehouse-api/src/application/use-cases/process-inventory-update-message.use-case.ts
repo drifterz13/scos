@@ -1,10 +1,10 @@
+import type { IWarehouseRepository } from "../../domain/repositories/warehouse.repository.interface";
 import type { InventoryUpdateMessageDto } from "../dto/inventory-update-message.dto";
-import type { UpdateInventoryUseCase } from "./update-inventory.use-case";
 
 export class ProcessInventoryUpdateMessageUseCase {
-  constructor(private updateInventoryUseCase: UpdateInventoryUseCase) {}
+  constructor(private warehouseRepository: IWarehouseRepository) {}
 
   async execute(message: InventoryUpdateMessageDto): Promise<void> {
-    await this.updateInventoryUseCase.execute(message.updates);
+    await this.warehouseRepository.updateStockBatch(message.updates);
   }
 }
