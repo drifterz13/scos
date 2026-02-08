@@ -31,7 +31,7 @@ export class QueueService {
     this.sqsClient = new SQSClient(config);
   }
 
-  async sendMessage(msgBody: any) {
+  async sendMessage(msgBody: string) {
     return this.sqsClient.send(
       new SendMessageCommand({
         QueueUrl: this.queueUrl,

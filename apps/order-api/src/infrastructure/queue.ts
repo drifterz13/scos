@@ -19,17 +19,8 @@ export class QueueService {
     this.sqsClient = new SQSClient(config);
   }
 
-  async sendMessage(msgBody: string, messageAttributes?: Record<string, { stringValue: string; dataType: string }>) {
+  async sendMessage(msgBody: string) {
     const attributes: Record<string, MessageAttributeValue> = {};
-
-    if (messageAttributes) {
-      for (const [key, value] of Object.entries(messageAttributes)) {
-        attributes[key] = {
-          StringValue: value.stringValue,
-          DataType: value.dataType,
-        };
-      }
-    }
 
     return this.sqsClient.send(
       new SendMessageCommand({

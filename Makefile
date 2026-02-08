@@ -25,5 +25,3 @@ ssm-orderdb:
 		--document-name AWS-StartPortForwardingSessionToRemoteHost \
 		--parameters '{"host":["scos-order-dbbdf3b32.cjemee80aitz.ap-southeast-1.rds.amazonaws.com"], "portNumber":["5432"], "localPortNumber":["5444"]}'
 
-dev-all:
-	bun run dev:all
