@@ -119,6 +119,8 @@ apps/web/
 
 The system uses a **Microservices** architecture to separate different domains of the application. Each service maintains its own database and can scale independently. This architectural style emphasizes scalability, performance, and extensibility.
 
+<img width="5113" height="1819" alt="image" src="https://github.com/user-attachments/assets/9b5e1d38-82ce-461c-a751-620ce7e9c1ee" />
+
 ### Performance & Scalability
 
 * **Cloud:** We use **AWS ECS Fargate** to scale automatically and **AWS Cloud Map** so services can find each other.
