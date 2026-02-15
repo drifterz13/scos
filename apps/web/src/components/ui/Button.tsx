@@ -18,7 +18,7 @@ export function Button({
   fullWidth = false,
 }: ButtonProps) {
   const baseClasses =
-    "px-6 py-3 rounded font-sora font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200";
+    "px-6 py-3 rounded font-sora font-semibold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200";
 
   const variantClasses =
     variant === "primary"
