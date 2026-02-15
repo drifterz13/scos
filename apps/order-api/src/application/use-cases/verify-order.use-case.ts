@@ -1,8 +1,11 @@
 import { PRODUCT_CONSTANTS } from "../../domain/constants/product.constants";
+import { Order } from "../../domain/entities/order.entity";
 import { Warehouse } from "../../domain/entities/warehouse.entity";
 import { DiscountCalculatorDomainService } from "../../domain/services/discount-calculator.domain-service";
 import { ShippingCalculatorDomainService } from "../../domain/services/shipping-calculator.domain-service";
 import { Coordinates } from "../../domain/value-objects/coordinates.vo";
+import { Discount } from "../../domain/value-objects/discount.vo";
+import { Money } from "../../domain/value-objects/money.vo";
 import { Quantity } from "../../domain/value-objects/quantity.vo";
 import type { VerifyOrderRequestDto, VerifyOrderResponseDto } from "../dto/verify-order.dto";
 import type { WarehouseDto } from "../dto/warehouse.dto";
@@ -30,13 +33,13 @@ export class VerifyOrderUseCase {
     const totalShippingCost = ShippingCalculatorDomainService.calculateTotalShippingCost(fulfillmentPlan);
 
     const unitPrice = PRODUCT_CONSTANTS.BASE_PRICE;
+    const discountVo = new Discount(discount.percentage);
+    const order = Order.create(coordinates, quantity, unitPrice, discountVo, totalShippingCost);
+
     const subtotal = unitPrice.multiply(quantity.value);
     const discountAmount = subtotal.applyPercentage(discount.percentage);
     const orderAmount = subtotal.subtract(discountAmount);
-    const totalPrice = orderAmount.add(totalShippingCost);
-
-    const maxShippingCost = orderAmount.applyPercentage(PRODUCT_CONSTANTS.MAX_SHIPPING_COST_PERCENTAGE);
-    const isValid = totalShippingCost.lessThanOrEqual(maxShippingCost);
+    const isValid = order.isValid(PRODUCT_CONSTANTS.MAX_SHIPPING_COST_PERCENTAGE);
 
     return {
       orderPreview: {
@@ -45,7 +48,7 @@ export class VerifyOrderUseCase {
         discountPercentage: discount.percentage,
         totalDiscountAmount: discountAmount.toDollars(),
         totalShippingCost: totalShippingCost.toDollars(),
-        totalPrice: totalPrice.toDollars(),
+        totalPrice: order.totalPrice.toDollars(),
       },
       fulfillmentPlan: fulfillmentPlan.map((plan) => ({
         warehouseId: plan.warehouseId,

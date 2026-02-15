@@ -14,6 +14,41 @@ export class WarehouseRepository implements IWarehouseRepository {
     );
   }
 
+  async findById(id: string): Promise<Warehouse | null> {
+    const result = await this.sql`SELECT * FROM warehouses WHERE id = ${id}`;
+    return result.length > 0 ? this.mapToEntity(result[0]) : null;
+  }
+
+  async create(warehouse: Warehouse): Promise<Warehouse> {
+    const data = {
+      name: warehouse.name,
+      latitude: warehouse.coordinates.latitude,
+      longitude: warehouse.coordinates.longitude,
+      stock_quantity: warehouse.stockQuantity,
+      last_updated_at: new Date(),
+    };
+
+    const result = await this.sql`INSERT INTO warehouses ${this.sql(data)} RETURNING *`;
+    return this.mapToEntity(result[0]);
+  }
+
+  async update(warehouse: Warehouse): Promise<Warehouse> {
+    const updateData = {
+      name: warehouse.name,
+      latitude: warehouse.coordinates.latitude,
+      longitude: warehouse.coordinates.longitude,
+      stock_quantity: warehouse.stockQuantity,
+      last_updated_at: new Date(),
+    };
+
+    const result = await this.sql`UPDATE warehouses SET ${this.sql(updateData)} WHERE id = ${warehouse.id} RETURNING *`;
+    return this.mapToEntity(result[0]);
+  }
+
+  async delete(id: string): Promise<void> {
+    await this.sql`DELETE FROM warehouses WHERE id = ${id}`;
+  }
+
   async updateStockBatch(updates: Array<{ warehouseId: string; quantity: number }>): Promise<void> {
     await this.sql.transaction(async (tx) => {
       for (const update of updates) {

@@ -1,8 +1,10 @@
-import { MapPin } from "lucide-react";
+import { MapPin, Pencil, Trash2 } from "lucide-react";
 import type { Warehouse } from "../types/warehouse";
 
 interface WarehouseTableProps {
   warehouses: Warehouse[];
+  onEdit?: (warehouse: Warehouse) => void;
+  onDelete?: (warehouse: Warehouse) => void;
 }
 
 function getStockStatus(quantity: number) {
@@ -11,7 +13,7 @@ function getStockStatus(quantity: number) {
   return { level: "Low", color: "text-red-600", bg: "bg-red-50" };
 }
 
-export function WarehouseTable({ warehouses }: WarehouseTableProps) {
+export function WarehouseTable({ warehouses, onEdit, onDelete }: WarehouseTableProps) {
   if (warehouses.length === 0) {
     return <div className="p-12 text-center text-gray-600">No warehouses found</div>;
   }
@@ -25,6 +27,9 @@ export function WarehouseTable({ warehouses }: WarehouseTableProps) {
             <th className="text-left py-4 px-6 font-semibold text-gray-900 text-sm">Location</th>
             <th className="text-right py-4 px-6 font-semibold text-gray-900 text-sm">Stock Level</th>
             <th className="text-center py-4 px-6 font-semibold text-gray-900 text-sm">Status</th>
+            {(onEdit || onDelete) && (
+              <th className="text-center py-4 px-6 font-semibold text-gray-900 text-sm">Actions</th>
+            )}
           </tr>
         </thead>
         <tbody>
@@ -62,6 +67,33 @@ export function WarehouseTable({ warehouses }: WarehouseTableProps) {
                     </span>
                   </div>
                 </td>
+
+                {(onEdit || onDelete) && (
+                  <td className="py-4 px-6">
+                    <div className="flex items-center justify-center gap-2">
+                      {onEdit && (
+                        <button
+                          type="button"
+                          onClick={() => onEdit(warehouse)}
+                          className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded transition-colors cursor-pointer"
+                          aria-label={`Edit ${warehouse.name}`}
+                        >
+                          <Pencil className="h-4 w-4" />
+                        </button>
+                      )}
+                      {onDelete && (
+                        <button
+                          type="button"
+                          onClick={() => onDelete(warehouse)}
+                          className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors cursor-pointer"
+                          aria-label={`Delete ${warehouse.name}`}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      )}
+                    </div>
+                  </td>
+                )}
               </tr>
             );
           })}
@@ -76,6 +108,7 @@ export function WarehouseTable({ warehouses }: WarehouseTableProps) {
               <strong>{warehouses.reduce((sum, w) => sum + w.stockQuantity, 0).toLocaleString()}</strong> total units
             </td>
             <td />
+            {(onEdit || onDelete) && <td />}
           </tr>
         </tfoot>
       </table>

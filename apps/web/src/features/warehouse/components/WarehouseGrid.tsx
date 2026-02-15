@@ -1,8 +1,10 @@
-import { MapPin } from "lucide-react";
+import { MapPin, Pencil, Trash2 } from "lucide-react";
 import type { Warehouse } from "../types/warehouse";
 
 interface WarehouseGridProps {
   warehouses: Warehouse[];
+  onEdit?: (warehouse: Warehouse) => void;
+  onDelete?: (warehouse: Warehouse) => void;
 }
 
 function getStockStatus(quantity: number) {
@@ -11,7 +13,7 @@ function getStockStatus(quantity: number) {
   return { status: "low", color: "text-red-600", dotColor: "bg-red-500" };
 }
 
-export function WarehouseGrid({ warehouses }: WarehouseGridProps) {
+export function WarehouseGrid({ warehouses, onEdit, onDelete }: WarehouseGridProps) {
   if (warehouses.length === 0) {
     return (
       <div className="border border-dashed border-gray-300 bg-gray-50 rounded-lg p-12 text-center">
@@ -26,13 +28,40 @@ export function WarehouseGrid({ warehouses }: WarehouseGridProps) {
         const status = getStockStatus(warehouse.stockQuantity);
 
         return (
-          <div key={warehouse.id} className="border border-gray-200 bg-white rounded-lg p-6">
+          <div
+            key={warehouse.id}
+            className="border border-gray-200 bg-white rounded-lg p-6 group hover:shadow-md transition-shadow"
+          >
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2 text-gray-500 text-sm">
                 <MapPin className="h-4 w-4" />
-                <span>{warehouse.name}</span>
+                <span className="font-medium">{warehouse.name}</span>
               </div>
-              <div className={`w-2 h-2 rounded-full ${status.dotColor}`} />
+              <div className="flex items-center gap-2">
+                <div className={`w-2 h-2 rounded-full ${status.dotColor}`} />
+                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  {onEdit && (
+                    <button
+                      type="button"
+                      onClick={() => onEdit(warehouse)}
+                      className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded transition-colors cursor-pointer"
+                      aria-label={`Edit ${warehouse.name}`}
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </button>
+                  )}
+                  {onDelete && (
+                    <button
+                      type="button"
+                      onClick={() => onDelete(warehouse)}
+                      className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors cursor-pointer"
+                      aria-label={`Delete ${warehouse.name}`}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  )}
+                </div>
+              </div>
             </div>
 
             <div className="mb-4">
